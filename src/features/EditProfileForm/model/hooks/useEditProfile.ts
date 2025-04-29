@@ -9,7 +9,6 @@ export const useEditProfile = () => {
   return useMutation({
     mutationFn: async (userData: EditProfileData) => {
       const token = localStorage.getItem("token");
-      if (!token) throw new Error("No auth token");
 
       const response = await axios.put(
         "https://blog-platform.kata.academy/api/user",

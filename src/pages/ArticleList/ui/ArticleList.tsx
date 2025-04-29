@@ -3,7 +3,7 @@ import { useArticleList } from "../model/hooks/useArticleList";
 import styles from "./ArticleList.module.scss";
 import { Card, CardContent, Typography, Box, Avatar, Pagination } from "@mui/material";
 import { ArticleType } from "../model/types";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Checkbox from "@mui/material/Checkbox";
 import Favorite from "@mui/icons-material/Favorite";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
@@ -11,17 +11,22 @@ import { useFavorite } from "../model/hooks/useFavorite";
 import { useUnfavorite } from "../model/hooks/useUnfavorite";
 
 const ArticleList = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageParam = parseInt(searchParams.get("page") || "1", 10);
+  const [currentPage, setCurrentPage] = useState(pageParam);
   const articlesPerPage = 5;
   const favoriteMutation = useFavorite();
   const unfavoriteMutation = useUnfavorite();
 
+  useEffect(() => {
+    setCurrentPage(pageParam);
+  }, [pageParam]);
+
   const [localFavorites, setLocalFavorites] = useState<Record<string, { favorited: boolean; count: number }>>({});
   const { data, isLoading, error } = useArticleList(currentPage, articlesPerPage);
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    event.preventDefault();
-    setCurrentPage(value);
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+    setSearchParams({ page: String(value) });
   };
 
   const getFavoritedState = (slug: string) => {

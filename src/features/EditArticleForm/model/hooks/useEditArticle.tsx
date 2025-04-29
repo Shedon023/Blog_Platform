@@ -10,7 +10,6 @@ export const useEditArticle = (reset: UseFormReset<EditArticleData>) => {
   return useMutation({
     mutationFn: async ({ slug, data }: EditArticlePayload) => {
       const token = localStorage.getItem("token");
-      if (!token) throw new Error("No auth token");
 
       const response = await axios.put(
         `https://blog-platform.kata.academy/api/articles/${slug}`,

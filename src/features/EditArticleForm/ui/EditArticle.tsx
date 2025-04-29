@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
 
 const EditArticleForm = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -117,12 +118,17 @@ const EditArticleForm = () => {
           </FormControl>
 
           <FormControl fullWidth margin="normal" error={!!errors.body}>
-            <TextField
-              label="Text"
+            <TextareaAutosize
               {...register("body")}
+              style={{
+                maxHeight: 200,
+                minHeight: 200,
+                fontSize: 16,
+                padding: 10,
+                resize: "none",
+                overflowY: "auto",
+              }}
               placeholder="Text"
-              type="text"
-              variant="outlined"
               autoComplete="text"
             />
             {errors.body && typeof errors.body.message === "string" && (

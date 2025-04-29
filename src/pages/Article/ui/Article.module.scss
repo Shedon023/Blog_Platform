@@ -30,6 +30,7 @@
   cursor: pointer;
   font-weight: bold;
   margin-bottom: 4px;
+  overflow-wrap: anywhere;
 }
 
 .likes {
@@ -62,6 +63,7 @@
   display: flex;
   gap: 12px;
   height: 100%;
+  position: relative;
 }
 
 .username {
@@ -84,7 +86,12 @@
 }
 
 .buttonGroup {
+  display: flex;
+  gap: 15px;
   margin-top: 15px;
+
+  width: 100%;
+  position: absolute;
 }
 
 .likesCount {

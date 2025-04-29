@@ -3,7 +3,6 @@ import axios from "axios";
 
 export const useFavorite = () => {
   const token = localStorage.getItem("token");
-  if (!token) throw new Error("No auth token");
 
   const favorite = async (slug: string) => {
     const res = await axios.post(

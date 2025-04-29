@@ -2,7 +2,7 @@ import SignUpForm from "@/features/SignUpForm/ui/SignUpForm";
 
 const SignUpPage = () => {
   return (
-    <div className="authPage">
+    <div>
       <SignUpForm />
     </div>
   );

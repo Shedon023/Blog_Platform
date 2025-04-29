@@ -2,7 +2,7 @@ import EditArticleForm from "@/features/EditArticleForm/ui/EditArticle";
 
 const EditProfilePage = () => {
   return (
-    <div className="authPage">
+    <div>
       <EditArticleForm />
     </div>
   );

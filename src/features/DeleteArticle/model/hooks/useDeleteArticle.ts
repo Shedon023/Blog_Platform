@@ -9,7 +9,6 @@ export const useDeleteArticle = () => {
   return useMutation<AxiosResponse, Error, string>({
     mutationFn: async (slug: string) => {
       const token = localStorage.getItem("token");
-      if (!token) throw new Error("No auth token");
 
       const response = await axios.delete(`https://blog-platform.kata.academy/api/articles/${slug}`, {
         headers: {

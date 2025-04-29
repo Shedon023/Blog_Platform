@@ -6,6 +6,7 @@ import { newArticleSchema } from "../model/schema";
 import { NewArticleData } from "../model/types";
 import { useState } from "react";
 import { useNewArticle } from "../model/hooks/useNewArticle";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
 
 const NewArticleForm = () => {
   const [tags, setTags] = useState<string[]>([]);
@@ -73,12 +74,17 @@ const NewArticleForm = () => {
           </FormControl>
 
           <FormControl fullWidth margin="normal" error={!!errors.body}>
-            <TextField
-              label="Text"
+            <TextareaAutosize
               {...register("body")}
+              style={{
+                maxHeight: 200,
+                minHeight: 200,
+                fontSize: 16,
+                padding: 10,
+                resize: "none",
+                overflowY: "auto",
+              }}
               placeholder="Text"
-              type="text"
-              variant="outlined"
               autoComplete="text"
             />
             {errors.body && typeof errors.body.message === "string" && (

@@ -20,10 +20,13 @@ import Favorite from "@mui/icons-material/Favorite";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import { useFavorite } from "@/pages/ArticleList/model/hooks/useFavorite";
 import { useUnfavorite } from "@/pages/ArticleList/model/hooks/useUnfavorite";
+import Markdown from "markdown-to-jsx";
+import { useGetUser } from "../model/hooks/useGetUser";
 
 const Article = () => {
   const { slug } = useParams<{ slug: string }>();
   const { data: article, isLoading, isError, error } = useArticle(slug!);
+  const { data: user } = useGetUser();
   const { mutate: deleteArticle } = useDeleteArticle();
   const favoriteMutation = useFavorite();
   const unfavoriteMutation = useUnfavorite();
@@ -71,6 +74,8 @@ const Article = () => {
   if (isLoading) return <h3>Загрузка...</h3>;
   if (isError) return <div>Ошибка: {(error as Error).message}</div>;
   if (!article) return <div>Статья не найдена</div>;
+
+  const isAuthor = user?.username === article.author.username;
 
   const favoriteState = localFavorites[slug!] || {
     favorited: article.favorited,
@@ -136,26 +141,27 @@ const Article = () => {
                     year: "numeric",
                   })}
                 </Typography>
-                <Box className={styles.buttonGroup}>
-                  <Button
-                    className={styles.editButton}
-                    variant="outlined"
-                    color="success"
-                    component={Link}
-                    to={`/editArticle/${article.slug}`}
-                  >
-                    Edit
-                  </Button>
-                  <Button className={styles.deleteButton} variant="outlined" color="error" onClick={handleModalOpen}>
-                    Delete
-                  </Button>
-                </Box>
+                {isAuthor && (
+                  <Box className={styles.buttonGroup}>
+                    <Button
+                      className={styles.editButton}
+                      variant="outlined"
+                      color="success"
+                      component={Link}
+                      to={`/editArticle/${article.slug}`}
+                    >
+                      Edit
+                    </Button>
+                    <Button className={styles.deleteButton} variant="outlined" color="error" onClick={handleModalOpen}>
+                      Delete
+                    </Button>
+                  </Box>
+                )}
               </Box>
               <Avatar src={article.author.image} alt={article.author.username} />
             </Box>
           </Box>
-
-          <Typography className={styles.body}>{article.body}</Typography>
+          <Markdown>{article.body}</Markdown>
         </CardContent>
       </Card>
 

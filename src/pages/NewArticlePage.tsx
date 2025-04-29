@@ -2,7 +2,7 @@ import NewArticleForm from "@/features/NewArticleForm/ui/NewArticleForm";
 
 const NewArticlePage = () => {
   return (
-    <div className="authPage">
+    <div>
       <NewArticleForm />
     </div>
   );

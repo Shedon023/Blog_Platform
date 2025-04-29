@@ -2,7 +2,7 @@ import SignInForm from "@/features/SignInForm/ui/SignInForm";
 
 const SignInPage = () => {
   return (
-    <div className="authPage">
+    <div>
       <SignInForm />
     </div>
   );
