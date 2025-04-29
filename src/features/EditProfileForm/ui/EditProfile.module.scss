@@ -1,0 +1,59 @@
+.editProfileContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 600px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  margin: 60px auto;
+  padding: 32px;
+  max-width: 400px;
+  width: 100%;
+  border-radius: 16px;
+
+  .formName {
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 28px;
+    color: #262626;
+    padding: 48px 0 0 0;
+    font-family: "Roboto";
+  }
+
+  .forms {
+    display: flex;
+    flex-direction: column;
+    margin-top: 21px;
+    gap: 6px;
+    height: 300px;
+  }
+
+  .inputError {
+    border: 2px solid red;
+    outline: none;
+  }
+
+  .footer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .saveBtn {
+    width: 328px;
+    height: 40px;
+    border-radius: 4px;
+    background-color: #1890ff;
+    margin-top: 21px;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+  }
+
+  .errorText {
+    color: red;
+    font-size: 12px;
+    margin-top: 2px;
+  }
+}

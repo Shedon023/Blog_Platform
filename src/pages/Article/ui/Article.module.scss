@@ -1,0 +1,98 @@
+.articleContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.articleCard {
+  width: 100%;
+  max-width: 840px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 0 24px;
+}
+
+.articleContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.articleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.articleTitle {
+  color: #0077cc;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.likes {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.tagWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tag {
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  font-size: 12px;
+  color: #666;
+}
+
+.description {
+  margin-bottom: 16px;
+}
+
+.authorInfo {
+  display: flex;
+  gap: 12px;
+  height: 100%;
+}
+
+.username {
+  font-weight: bold;
+  font-size: 14px;
+  justify-self: flex-end;
+}
+
+.date {
+  font-size: 11px !important;
+  color: #999;
+  justify-self: flex-end;
+}
+
+.body {
+  font-size: 15px;
+  color: #333;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.buttonGroup {
+  margin-top: 15px;
+}
+
+.likesCount {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.likes {
+  padding-top: 5px;
+}
