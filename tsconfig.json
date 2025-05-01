@@ -4,6 +4,9 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es6",
-    "types": ["node"]
+    "types": ["node", "@mui/material"],
+    "jsx": "react", // добавляем поддержку JSX
+    "esModuleInterop": true, // для работы с импортами CommonJS
+    "resolveJsonModule": true // если ваш проект использует JSON файлы
   }
 }

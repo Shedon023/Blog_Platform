@@ -4,7 +4,7 @@ import { editProfileSchema } from "../model/schema";
 import { EditProfileData } from "../model/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, FormControl, FormHelperText, TextField } from "@mui/material";
-import { useUserStore } from "@/entities/user/model/store";
+import { useUserStore } from "../../../entities/user/model/store";
 import { useEditProfile } from "../model/hooks/useEditProfile";
 import { useEffect } from "react";
 
