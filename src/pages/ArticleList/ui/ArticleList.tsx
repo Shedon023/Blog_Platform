@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useArticleList } from "../model/hooks/useArticleList";
 import styles from "./ArticleList.module.scss";
-import { Card, CardContent, Typography, Box, Avatar, Pagination } from "@mui/material";
+import { Card, CardContent, Typography, Box, Avatar, Pagination, CircularProgress } from "@mui/material";
 import { ArticleType } from "../model/types";
 import { Link, useSearchParams } from "react-router-dom";
 import Checkbox from "@mui/material/Checkbox";
@@ -71,7 +71,19 @@ const ArticleList = () => {
     }
   };
 
-  if (isLoading) return <h3>Загрузка ...</h3>;
+  if (isLoading)
+    return (
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   if (error) return <div>Ошибка: {error.message}</div>;
 
   return (
