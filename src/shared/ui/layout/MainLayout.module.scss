@@ -1,4 +1,6 @@
+@use "../../../shared/styles/colors.scss" as colors;
+
 .mainContainer {
-  background-color: #f3f4f6;
+  background-color: colors.$main-background;
   min-height: 100vh;
 }

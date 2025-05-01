@@ -1,3 +1,5 @@
+@use "../../../shared/styles/colors.scss" as colors;
+
 .headerContainer {
   display: flex;
   justify-content: space-between;
@@ -5,7 +7,7 @@
   width: 100%;
   height: 60px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  background-color: #ffffff;
+  background-color: colors.$components-background;
 
   .headerName {
     font-family: "Roboto";

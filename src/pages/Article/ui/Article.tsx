@@ -161,7 +161,7 @@ const Article = () => {
               <Avatar src={article.author.image} alt={article.author.username} />
             </Box>
           </Box>
-          <Markdown>{article.body}</Markdown>
+          <Markdown className={styles.body}>{article.body}</Markdown>
         </CardContent>
       </Card>
 

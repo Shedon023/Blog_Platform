@@ -1,3 +1,5 @@
+@use "../../../shared/styles/colors.scss" as colors;
+
 .articleListContainer {
   display: flex;
   flex-direction: column;
@@ -15,7 +17,7 @@
   padding: 16px;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
+  background-color: colors.$components-background;
   transition: all 0.3s ease;
 
   &:hover {
@@ -47,18 +49,18 @@
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 8px;
-  color: #1890ff;
+  color: colors.$article-name;
 }
 
 .articleTags {
   font-size: 0.875rem;
-  color: #888;
+  color: colors.$tag;
   margin-bottom: 12px;
 }
 
 .articleDescription {
   font-size: 1rem;
-  color: #666;
+  color: colors.$tag;
   margin-bottom: 12px;
 }
 
@@ -66,12 +68,12 @@
   display: flex;
   justify-content: flex-end;
   font-size: 0.875rem;
-  color: #444;
+  color: colors.$tag;
 }
 
 .articleDate {
   font-size: 0.75rem;
-  color: #999;
+  color: colors.$tag;
 }
 
 .mainContent {
@@ -88,7 +90,7 @@
 }
 
 .articleTag {
-  border: 1px solid #00000080;
+  border: 1px solid colors.$main-text-color;
   padding: 4px 8px;
   border-radius: 2px;
   font-size: 0.875rem;

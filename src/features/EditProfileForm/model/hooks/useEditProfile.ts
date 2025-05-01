@@ -14,8 +14,8 @@ export const useEditProfile = () => {
         "https://blog-platform.kata.academy/api/user",
         {
           user: {
-            email: userData.emailAdress,
-            username: userData.userName,
+            email: userData.emailAdress || undefined,
+            username: userData.userName || undefined,
             password: userData.newPassword || undefined,
             image: userData.avatarImage,
           },

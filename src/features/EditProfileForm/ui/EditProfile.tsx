@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, FormControl, FormHelperText, TextField } from "@mui/material";
 import { useUserStore } from "@/entities/user/model/store";
 import { useEditProfile } from "../model/hooks/useEditProfile";
+import { useEffect } from "react";
 
 const EditProfileForm = () => {
   const user = useUserStore((state) => state.user);
@@ -19,18 +20,27 @@ const EditProfileForm = () => {
   } = useForm<EditProfileData>({
     resolver: zodResolver(editProfileSchema),
     mode: "onSubmit",
-    defaultValues: {
-      userName: user?.username || "",
-      emailAdress: user?.email || "",
-      avatarImage: user?.image || "",
-    },
+    // defaultValues: {
+    //   userName: user?.username || "",
+    //   emailAdress: user?.email || "",
+    //   avatarImage: user?.image || "",
+    // },
   });
+
+  useEffect(() => {
+    if (user) {
+      reset({
+        userName: user.username ?? "",
+        emailAdress: user.email ?? "",
+        avatarImage: user.image ?? "",
+      });
+    }
+  }, [user, reset]);
 
   const onSubmit = (data: EditProfileData) => {
     mutateAsync(data)
       .then(() => {
         console.log("Профиль изменен");
-        reset();
       })
       .catch((err: unknown) => {
         console.error("Ошибка", err);
