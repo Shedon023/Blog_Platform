@@ -1,5 +1,5 @@
 import { Checkbox, CheckboxProps, FormControlLabel, FormHelperText } from "@mui/material";
-import { useController, useFormContext } from "react-hook-form";
+import { useController } from "react-hook-form";
 
 type CheckboxInputProps = CheckboxProps & {
   name: string;
@@ -7,13 +7,11 @@ type CheckboxInputProps = CheckboxProps & {
 };
 
 export const CheckboxInput: React.FC<CheckboxInputProps> = ({ name, label, ...props }) => {
-  const { control } = useFormContext();
   const {
     field,
     fieldState: { error },
   } = useController({
     name,
-    control,
   });
 
   return (
