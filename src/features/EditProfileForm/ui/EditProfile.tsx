@@ -1,31 +1,30 @@
 import styles from "./EditProfile.module.scss";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { editProfileSchema } from "../model/schema";
 import { EditProfileData } from "../model/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, FormControl, FormHelperText, TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import { useUserStore } from "../../../entities/user/model/store";
 import { useEditProfile } from "../model/hooks/useEditProfile";
 import { useEffect } from "react";
+import { TextInput } from "@/shared/ui/TextInput";
 
 const EditProfileForm = () => {
   const user = useUserStore((state) => state.user);
   const { mutateAsync } = useEditProfile();
 
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    reset,
-  } = useForm<EditProfileData>({
+  const methods = useForm<EditProfileData>({
     resolver: zodResolver(editProfileSchema),
-    mode: "onSubmit",
-    // defaultValues: {
-    //   userName: user?.username || "",
-    //   emailAdress: user?.email || "",
-    //   avatarImage: user?.image || "",
-    // },
+    mode: "onBlur",
+    defaultValues: {
+      userName: "",
+      emailAdress: "",
+      newPassword: "",
+      avatarImage: "",
+    },
   });
+
+  const { handleSubmit, reset } = methods;
 
   useEffect(() => {
     if (user) {
@@ -50,69 +49,50 @@ const EditProfileForm = () => {
   return (
     <div className={styles.editProfileContainer}>
       <span className={styles.formName}>Edit Profile</span>
-
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className={styles.forms}>
-          <FormControl fullWidth margin="normal" error={!!errors.userName}>
-            <TextField
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className={styles.forms}>
+            <TextInput
+              className={styles.input}
+              name="userName"
               label="Username"
-              {...register("userName")}
               placeholder="Username"
-              variant="outlined"
               autoComplete="username"
             />
-            {errors.userName && typeof errors.userName.message === "string" && (
-              <FormHelperText>{errors.userName.message}</FormHelperText>
-            )}
-          </FormControl>
 
-          <FormControl fullWidth margin="normal" error={!!errors.emailAdress}>
-            <TextField
+            <TextInput
+              className={styles.input}
+              name="emailAdress"
               label="Email adress"
-              {...register("emailAdress")}
               placeholder="Email adress"
-              variant="outlined"
               autoComplete="email"
             />
-            {errors.emailAdress && typeof errors.emailAdress.message === "string" && (
-              <FormHelperText>{errors.emailAdress.message}</FormHelperText>
-            )}
-          </FormControl>
 
-          <FormControl fullWidth margin="normal" error={!!errors.newPassword}>
-            <TextField
+            <TextInput
+              className={styles.input}
+              name="newPassword"
               label="New Password"
-              {...register("newPassword")}
               placeholder="New Password"
               type="password"
-              variant="outlined"
               autoComplete="new-password"
             />
-            {errors.newPassword && typeof errors.newPassword.message === "string" && (
-              <FormHelperText>{errors.newPassword.message}</FormHelperText>
-            )}
-          </FormControl>
 
-          <FormControl fullWidth margin="normal" error={!!errors.avatarImage}>
-            <TextField
+            <TextInput
+              className={styles.input}
+              name="avatarImage"
               label="Avatar image (url)"
-              {...register("avatarImage")}
               placeholder="Avatar image"
-              variant="outlined"
               autoComplete="avatar image"
             />
-            {errors.avatarImage && typeof errors.avatarImage.message === "string" && (
-              <FormHelperText>{errors.avatarImage.message}</FormHelperText>
-            )}
-          </FormControl>
 
-          <div className={styles.footer}>
-            <Button type="submit" variant="contained" color="primary" fullWidth className={styles.saveBtn}>
-              Save
-            </Button>
+            <div className={styles.footer}>
+              <Button type="submit" variant="contained" color="primary" fullWidth className={styles.saveBtn}>
+                Save
+              </Button>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </FormProvider>
     </div>
   );
 };

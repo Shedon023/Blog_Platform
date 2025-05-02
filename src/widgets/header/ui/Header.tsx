@@ -22,7 +22,7 @@ const Header = () => {
         {user ? (
           <>
             <div className={styles.userInfo}>
-              <Button variant="outlined" color="success" size="small" component={Link} to={"/newArticle"}>
+              <Button variant="outlined" color="success" component={Link} to={"/newArticle"}>
                 Create article
               </Button>
               <Typography variant="body1" className={styles.userName} component={Link} to={`/editProfile`}>
