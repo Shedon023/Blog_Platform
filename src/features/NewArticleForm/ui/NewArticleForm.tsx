@@ -77,9 +77,8 @@ const NewArticleForm = () => {
             <TextareaAutosize
               {...register("body")}
               style={{
-                maxHeight: 200,
-                minHeight: 200,
-                fontSize: 16,
+                height: 200,
+                fontSize: 17,
                 padding: 10,
                 resize: "none",
                 overflowY: "auto",

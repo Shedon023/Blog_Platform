@@ -121,9 +121,8 @@ const EditArticleForm = () => {
             <TextareaAutosize
               {...register("body")}
               style={{
-                maxHeight: 200,
-                minHeight: 200,
-                fontSize: 16,
+                height: 200,
+                fontSize: 17,
                 padding: 10,
                 resize: "none",
                 overflowY: "auto",
@@ -140,7 +139,15 @@ const EditArticleForm = () => {
             <span className={styles.tagsLabel}>Tags</span>
             {tags.map((tag, index) => (
               <div key={index} className={styles.tagItem}>
-                <TextField value={tag} disabled sx={{ width: 300 }} />
+                <TextField
+                  onChange={(e) => {
+                    const updatedTags = [...tags];
+                    updatedTags[index] = e.target.value;
+                    setTags(updatedTags);
+                  }}
+                  value={tag}
+                  sx={{ width: 300 }}
+                />
                 <Button variant="outlined" color="error" onClick={() => handleDeleteTag(index)}>
                   Delete
                 </Button>
