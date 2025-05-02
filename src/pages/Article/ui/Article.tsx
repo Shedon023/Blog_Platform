@@ -46,7 +46,7 @@ const Article = () => {
   }, [localFavorites]);
 
   const handleFavoriteChange = () => {
-    if (!slug) return;
+    if (!slug || !user) return;
 
     const currentState = localFavorites[slug] || {
       favorited: article?.favorited || false,

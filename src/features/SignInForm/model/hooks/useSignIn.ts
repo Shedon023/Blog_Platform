@@ -24,10 +24,11 @@ export const useSignIn = (
       const token = res.data.user.token;
       localStorage.setItem("authToken", token);
       navigate("/", { replace: true });
+      console.log("You are logged in!");
     },
     onError: (error: AxiosError) => {
       if (error.response?.status === 422 || error.response?.status === 401) {
-        setError("root", { message: "Неверный логин или пароль" });
+        setError("root", { message: "Invalid email or password" });
       } else {
         console.log(error);
       }

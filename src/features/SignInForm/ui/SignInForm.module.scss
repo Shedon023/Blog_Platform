@@ -22,6 +22,14 @@
     font-family: "Roboto";
   }
 
+  .forms {
+    display: flex;
+    flex-direction: column;
+    margin-top: 21px;
+    gap: 16px;
+    min-height: fit-content;
+  }
+
   .footer {
     display: flex;
     flex-direction: column;
@@ -35,5 +43,16 @@
 
   .signUp {
     font-family: Roboto;
+  }
+
+  .input {
+    min-width: 400px;
+  }
+
+  .rootError {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 8px;
+    text-align: center;
   }
 }

@@ -1,23 +1,21 @@
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { TextField, Checkbox, FormControl, FormHelperText, FormControlLabel, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import styles from "./SignUpForm.module.scss";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSignUp } from "../model";
 import { signUpSchema } from "../model/schema";
 import { SignUpData } from "../model/types";
+import { TextInput } from "@/shared/ui/TextInput";
+import { CheckboxInput } from "@/shared/ui/CheckboxInput";
 
 const SignUpForm = () => {
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    reset,
-    watch,
-  } = useForm<SignUpData>({
+  const methods = useForm<SignUpData>({
     resolver: zodResolver(signUpSchema),
-    mode: "onSubmit",
+    mode: "onBlur",
   });
+
+  const { handleSubmit, reset, watch } = methods;
 
   const { mutate } = useSignUp(reset);
 
@@ -30,96 +28,61 @@ const SignUpForm = () => {
   return (
     <div className={styles.LoginPageContainer}>
       <span className={styles.formName}>Create new account</span>
-
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className={styles.forms}>
-          <FormControl fullWidth margin="normal" error={!!errors.userName}>
-            <TextField
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className={styles.forms}>
+            <TextInput
+              className={styles.input}
+              name="userName"
               label="Username"
-              {...register("userName")}
               placeholder="Username"
-              variant="outlined"
               autoComplete="username"
             />
-            {errors.userName && typeof errors.userName.message === "string" && (
-              <FormHelperText>{errors.userName.message}</FormHelperText>
-            )}
-          </FormControl>
 
-          <FormControl fullWidth margin="normal" error={!!errors.emailAdress}>
-            <TextField
-              label="Email adress"
-              {...register("emailAdress")}
-              placeholder="Email adress"
-              variant="outlined"
-              autoComplete="email"
-            />
-            {errors.emailAdress && typeof errors.emailAdress.message === "string" && (
-              <FormHelperText>{errors.emailAdress.message}</FormHelperText>
-            )}
-          </FormControl>
+            <TextInput name="emailAdress" label="Email adress" placeholder="Email adress" autoComplete="email" />
 
-          <FormControl fullWidth margin="normal" error={!!errors.password}>
-            <TextField
+            <TextInput
+              className={styles.input}
+              name="password"
               label="Password"
-              {...register("password")}
               placeholder="Password"
               type="password"
-              variant="outlined"
               autoComplete="new-password"
             />
-            {errors.password && typeof errors.password.message === "string" && (
-              <FormHelperText>{errors.password.message}</FormHelperText>
-            )}
-          </FormControl>
 
-          <FormControl fullWidth margin="normal" error={!!errors.repeatPassword}>
-            <TextField
+            <TextInput
+              className={styles.input}
+              name="repeatPassword"
               label="Repeat Password"
-              {...register("repeatPassword")}
               placeholder="Repeat Password"
               type="password"
-              variant="outlined"
               autoComplete="repeat-password"
             />
-            {errors.repeatPassword && typeof errors.repeatPassword.message === "string" && (
-              <FormHelperText>{errors.repeatPassword.message}</FormHelperText>
-            )}
-          </FormControl>
 
-          <FormControlLabel
-            control={<Checkbox {...register("agreeTerms")} />}
-            label="I agree to the processing of my personal information"
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              gap: "8px",
-              fontWeight: 400,
-              fontSize: "14px",
-              lineHeight: "22px",
-              color: "#595959",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          />
+            <CheckboxInput
+              className={styles.checkbox}
+              name="agreeTerms"
+              label="I agree to the processing of my personal information"
+            />
 
-          <div className={styles.footer}>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              disabled={!agreeTerms}
-              className={!agreeTerms ? styles.submitBtnDisabled : styles.submitBtn}
-            >
-              Create
-            </Button>
-            <span className={styles.signIn}>
-              Already have an account? <Link to="/sign-in">Sign in.</Link>
-            </span>
+            <div className={styles.footer}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                disabled={!agreeTerms}
+                className={!agreeTerms ? styles.submitBtnDisabled : styles.submitBtn}
+              >
+                Create
+              </Button>
+              <span className={styles.signIn}>
+                Already have an account? <Link to="/sign-in">Sign in.</Link>
+              </span>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </FormProvider>
     </div>
   );
 };

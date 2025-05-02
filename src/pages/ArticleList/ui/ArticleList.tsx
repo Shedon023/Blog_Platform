@@ -9,11 +9,13 @@ import Favorite from "@mui/icons-material/Favorite";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import { useFavorite } from "../model/hooks/useFavorite";
 import { useUnfavorite } from "../model/hooks/useUnfavorite";
+import { useGetUser } from "@/pages/Article/model/hooks/useGetUser";
 
 const ArticleList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const pageParam = parseInt(searchParams.get("page") || "1", 10);
   const [currentPage, setCurrentPage] = useState(pageParam);
+  const { data: user } = useGetUser();
   const articlesPerPage = 5;
   const favoriteMutation = useFavorite();
   const unfavoriteMutation = useUnfavorite();
@@ -52,6 +54,7 @@ const ArticleList = () => {
   }, [localFavorites]);
 
   const handleFavoriteChange = (slug: string) => {
+    if (!user) return;
     const currentState = getFavoritedState(slug);
     const newFavorited = !currentState.favorited;
     const newCount = newFavorited ? currentState.count + 1 : currentState.count - 1;

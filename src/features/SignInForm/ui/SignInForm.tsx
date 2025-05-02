@@ -1,30 +1,37 @@
 import styles from "./SignInForm.module.scss";
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TextField, FormControl, FormHelperText, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import { signInSchema } from "../model/schema";
 import { SignInData } from "../model/types";
 import { useSignIn } from "../model/hooks/useSignIn";
 import { useUserStore } from "@/entities/user/model/store";
 import { User } from "@/entities/user/model/types";
+import { TextInput } from "@/shared/ui/TextInput";
 
 const SignInForm = () => {
+  const methods = useForm<SignInData>({
+    resolver: zodResolver(signInSchema),
+    mode: "onBlur",
+    defaultValues: {
+      emailAdress: "",
+      password: "",
+    },
+  });
+
   const {
-    register,
-    formState: { errors },
     handleSubmit,
     setError,
-  } = useForm<SignInData>({
-    resolver: zodResolver(signInSchema),
-    mode: "onSubmit",
-  });
+    formState: { errors },
+  } = methods;
 
   const { loginMutation } = useSignIn(setError);
   const setUser = useUserStore((state) => state.setUser);
 
-  const onSubmit = (data: SignInData) => {
-    loginMutation(data).then((response) => {
+  const onSubmit = async (data: SignInData) => {
+    try {
+      const response = await loginMutation(data);
       const user: User = {
         username: response.data.user.username,
         email: response.data.user.email,
@@ -34,54 +41,46 @@ const SignInForm = () => {
       };
       setUser(user);
       window.location.href = "/";
-    });
+    } catch (err) {}
   };
 
   return (
     <div className={styles.signInContainer}>
       <span className={styles.formName}>Sign In</span>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className={styles.forms}>
-          <FormControl fullWidth margin="normal" error={!!errors.emailAdress}>
-            <TextField
-              label="Email adress"
-              {...register("emailAdress")}
-              placeholder="Email adress"
-              variant="outlined"
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className={styles.forms}>
+            <TextInput
+              className={styles.input}
+              name="emailAdress"
+              label="Email"
+              placeholder="Email"
               autoComplete="email"
             />
-            {errors.emailAdress && typeof errors.emailAdress.message === "string" && (
-              <FormHelperText>{errors.emailAdress.message}</FormHelperText>
-            )}
-          </FormControl>
 
-          <FormControl fullWidth margin="normal" error={!!errors.password}>
-            <TextField
+            <TextInput
+              className={styles.input}
+              name="password"
               label="Password"
-              {...register("password")}
               placeholder="Password"
               type="password"
-              variant="outlined"
-              autoComplete="password"
+              autoComplete="current-password"
             />
-            {errors.password && typeof errors.password.message === "string" && (
-              <FormHelperText>{errors.password.message}</FormHelperText>
-            )}
-          </FormControl>
 
-          <span>{errors.root?.message}</span>
+            {errors.root && <div className={styles.rootError}>{errors.root.message}</div>}
 
-          <div className={styles.footer}>
-            <Button className={styles.submitBtn} type="submit" variant="contained" color="primary" fullWidth>
-              Login
-            </Button>
+            <div className={styles.footer}>
+              <Button className={styles.submitBtn} type="submit" variant="contained" color="primary" fullWidth>
+                Login
+              </Button>
 
-            <span className={styles.signUp}>
-              Don't have an account? <Link to="/sign-up">Sign Up.</Link>
-            </span>
+              <span className={styles.signUp}>
+                Don't have an account? <Link to="/sign-up">Sign Up.</Link>
+              </span>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </FormProvider>
     </div>
   );
 };

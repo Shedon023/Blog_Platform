@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 600px;
+  min-height: fit-content;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   background-color: colors.$components-background;
   margin: 60px auto;
@@ -27,25 +27,21 @@
   display: flex;
   flex-direction: column;
   margin-top: 21px;
-  gap: 6px;
-  height: 300px;
+  gap: 16px;
+  min-height: fit-content;
 }
 
-.agreeTerms {
+.inputContainer {
   display: flex;
-  flex-direction: row;
-  margin-top: 21px;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 22px;
-  color: colors.$second-text-color;
-  gap: 2px;
-  justify-content: center;
+  flex-direction: column;
+  min-height: 72px;
 }
 
-.inputError {
-  border: 2px solid colors.$error-text-color;
-  outline: none;
+.errorText {
+  color: colors.$error-text-color;
+  font-size: 12px;
+  height: 20px;
+  margin-top: 4px;
 }
 
 .footer {
@@ -53,6 +49,7 @@
   flex-direction: column;
   gap: 8px;
   align-items: center;
+  margin-top: 16px;
 }
 
 .submitBtn {
@@ -60,7 +57,6 @@
   height: 40px;
   border-radius: 4px;
   background-color: colors.$article-name;
-  margin-top: 21px;
   border: none;
   cursor: pointer;
 }
@@ -78,36 +74,10 @@ a {
   text-decoration: none;
 }
 
-.errorText {
-  color: colors.$error-text-color;
-  font-size: 12px;
-  margin-top: 2px;
+.input {
+  min-width: 320px;
 }
 
-label {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 22px;
-  color: colors.$main-text-color;
-}
-
-input {
-  width: 320px;
-  height: 40px;
-  padding-left: 12px;
-
-  &::placeholder {
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
-    color: colors.$input;
-  }
-
-  &[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-  }
+.checkbox {
+  margin: 16px 0;
 }
