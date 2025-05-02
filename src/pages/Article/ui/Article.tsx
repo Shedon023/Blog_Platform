@@ -166,16 +166,16 @@ const Article = () => {
       </Card>
 
       <Dialog open={openModal} onClose={handleModalClose}>
-        <DialogTitle>Подтвердите удаление</DialogTitle>
+        <DialogTitle>Confirm deletion</DialogTitle>
         <DialogContent>
-          <Typography>Вы уверены, что хотите удалить эту статью?</Typography>
+          <Typography>Are you sure you want to delete this article?</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleModalClose} color="primary">
-            Отмена
+            Cancel
           </Button>
           <Button onClick={handleDelete} color="error">
-            Удалить
+            Delete
           </Button>
         </DialogActions>
       </Dialog>
