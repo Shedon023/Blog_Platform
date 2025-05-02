@@ -1,15 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { UseFormReset } from "react-hook-form";
+import axios, { AxiosError } from "axios";
 import { SignUpData } from "../types";
+import { UseFormSetError } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "@/entities/user/model/store";
 
-export const useSignUp = (reset: UseFormReset<SignUpData>) => {
+export const useSignUp = (setError: UseFormSetError<SignUpData>) => {
   const setUser = useUserStore((state) => state.setUser);
   const navigate = useNavigate();
 
-  const { mutate } = useMutation({
+  const mutation = useMutation({
     mutationFn: (userData: SignUpData) =>
       axios.post("https://blog-platform.kata.academy/api/users", {
         user: {
@@ -27,14 +27,21 @@ export const useSignUp = (reset: UseFormReset<SignUpData>) => {
         image: user.image,
         token: user.token,
       });
-
-      console.log("Registration successful!");
-      reset();
       navigate("/", { replace: true });
     },
-    onError: (error) => {
-      console.error("SignUp error", error);
+    onError: (error: AxiosError) => {
+      if (error.response?.status === 422) {
+        setError("root", { message: "Username or email already taken" });
+      } else {
+        console.error("SignUp error", error);
+        setError("root", { message: "Registration failed. Please try again." });
+      }
     },
   });
-  return { mutate };
+
+  return {
+    isLoading: mutation.isPending,
+    signUpMutation: mutation.mutateAsync,
+    isError: mutation.isError,
+  };
 };

@@ -1,7 +1,7 @@
 import styles from "./EditArticle.module.scss";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TextField, FormControl, FormHelperText, Button } from "@mui/material";
+import { TextField, FormControl, FormHelperText, Button, Box, CircularProgress } from "@mui/material";
 import { editArticleSchema } from "../model/schema";
 import { EditArticleData } from "../model/types";
 import { useState, useEffect } from "react";
@@ -81,7 +81,18 @@ const EditArticleForm = () => {
   };
 
   if (isLoading) {
-    return <div>Loading ...</div>;
+    return (
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (

@@ -1,6 +1,6 @@
 import { useForm, FormProvider } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { Button } from "@mui/material";
+import { Box, Button, CircularProgress } from "@mui/material";
 import styles from "./SignUpForm.module.scss";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSignUp } from "../model";
@@ -15,15 +15,32 @@ const SignUpForm = () => {
     mode: "onBlur",
   });
 
-  const { handleSubmit, reset, watch } = methods;
+  const { handleSubmit, setError, watch } = methods;
 
-  const { mutate } = useSignUp(reset);
+  const { signUpMutation, isLoading } = useSignUp(setError);
 
-  const onSubmit = (data: SignUpData) => {
-    mutate(data);
+  const onSubmit = async (data: SignUpData) => {
+    try {
+      await signUpMutation(data);
+    } catch (error) {}
   };
 
   const agreeTerms = watch("agreeTerms");
+
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <div className={styles.LoginPageContainer}>

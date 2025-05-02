@@ -1,5 +1,5 @@
 export type User = {
-  bio: string;
+  bio: string | null;
   email: string;
   image: string | null;
   token: string;

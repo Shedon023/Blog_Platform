@@ -1,16 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { UseFormReset } from "react-hook-form";
+import axios, { AxiosError } from "axios";
 import { NewArticleData } from "../types";
-import { useUserStore } from "@/entities/user/model/store";
+import { UseFormSetError } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "@/entities/user/model/store";
 
-export const useNewArticle = (reset: UseFormReset<NewArticleData>) => {
+export const useNewArticle = (setError: UseFormSetError<NewArticleData>) => {
   const navigate = useNavigate();
-
   const token = useUserStore((state) => state.user?.token);
 
-  const { mutate } = useMutation({
+  const mutation = useMutation({
     mutationFn: (articleData: NewArticleData) =>
       axios.post(
         "https://blog-platform.kata.academy/api/articles",
@@ -29,14 +28,23 @@ export const useNewArticle = (reset: UseFormReset<NewArticleData>) => {
         }
       ),
     onSuccess: () => {
-      console.log("Статья создана");
       navigate("/", { replace: true });
-      reset();
     },
-    onError: (error) => {
-      console.error("Ошибка при создании статьи", error);
+    onError: (error: AxiosError) => {
+      if (error.response?.status === 422) {
+        setError("root", { message: "Validation failed. Please check your inputs." });
+      } else if (error.response?.status === 401) {
+        setError("root", { message: "You need to be logged in to create an article" });
+      } else {
+        setError("root", { message: "Failed to create article. Please try again." });
+        console.error("Article creation error", error);
+      }
     },
   });
 
-  return { mutate };
+  return {
+    isLoading: mutation.isPending,
+    createArticle: mutation.mutateAsync,
+    isError: mutation.isError,
+  };
 };

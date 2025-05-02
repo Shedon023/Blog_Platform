@@ -1,7 +1,7 @@
 import styles from "./NewArticle.module.scss";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TextField, FormControl, FormHelperText, Button } from "@mui/material";
+import { TextField, FormControl, FormHelperText, Button, Box, CircularProgress } from "@mui/material";
 import { newArticleSchema } from "../model/schema";
 import { NewArticleData } from "../model/types";
 import { useState } from "react";
@@ -11,6 +11,16 @@ import TextareaAutosize from "@mui/material/TextareaAutosize";
 const NewArticleForm = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState<string>("");
+
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    setError,
+  } = useForm<NewArticleData>({
+    resolver: zodResolver(newArticleSchema),
+    mode: "onSubmit",
+  });
 
   const handleAddTag = () => {
     if (newTag.trim()) {
@@ -23,22 +33,29 @@ const NewArticleForm = () => {
     setTags((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    reset,
-  } = useForm<NewArticleData>({
-    resolver: zodResolver(newArticleSchema),
-    mode: "onSubmit",
-  });
+  const { createArticle, isLoading } = useNewArticle(setError);
 
-  const { mutate } = useNewArticle(reset);
-
-  const onSubmit = (data: NewArticleData) => {
+  const onSubmit = async (data: NewArticleData) => {
     const formData = { ...data, tagList: tags };
-    mutate(formData);
+    try {
+      await createArticle(formData);
+    } catch (error) {}
   };
+
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <div className={styles.newArticleContainer}>
@@ -95,7 +112,15 @@ const NewArticleForm = () => {
             <span className={styles.tagsLabel}>Tags</span>
             {tags.map((tag, index) => (
               <div key={index} className={styles.tagItem}>
-                <TextField value={tag} disabled sx={{ width: 300 }} />
+                <TextField
+                  value={tag}
+                  sx={{ width: 300 }}
+                  onChange={(e) => {
+                    const updatedTags = [...tags];
+                    updatedTags[index] = e.target.value;
+                    setTags(updatedTags);
+                  }}
+                />
                 <Button variant="outlined" color="error" onClick={() => handleDeleteTag(index)}>
                   Delete
                 </Button>

@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogTitle,
   Checkbox,
+  CircularProgress,
 } from "@mui/material";
 import { useArticle } from "../model/hooks/useArticle";
 import { useDeleteArticle } from "@/features/DeleteArticle/model/hooks";
@@ -71,7 +72,19 @@ const Article = () => {
     }
   };
 
-  if (isLoading) return <h3>Загрузка...</h3>;
+  if (isLoading)
+    return (
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   if (isError) return <div>Ошибка: {(error as Error).message}</div>;
   if (!article) return <div>Статья не найдена</div>;
 
