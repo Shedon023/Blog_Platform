@@ -5,7 +5,7 @@ import { Button, Box, CircularProgress } from "@mui/material";
 import { editArticleSchema } from "../model/schema";
 import { EditArticleData } from "../model/types";
 import { useState, useEffect } from "react";
-import { fetchArticle } from "../model/hooks/useArticle";
+import { fetchArticle } from "../../../shared/api/services/article-service";
 import { useEditArticle } from "../model";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";

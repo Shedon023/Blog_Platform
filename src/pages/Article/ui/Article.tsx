@@ -14,7 +14,7 @@ import {
   Checkbox,
   CircularProgress,
 } from "@mui/material";
-import { useArticle } from "../model/hooks/useArticle";
+import { useArticle } from "../model/hooks/useArticle"; //
 import { useDeleteArticle } from "@/features/DeleteArticle/model/hooks";
 import { useEffect, useState } from "react";
 import Favorite from "@mui/icons-material/Favorite";

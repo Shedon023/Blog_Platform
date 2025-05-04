@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import { TextInput } from "@/shared/ui/TextInput";
 import { NewArticleData } from "@/features/NewArticleForm/model/types";
 import { newArticleSchema } from "@/features/NewArticleForm/model/schema";
-import { fetchArticle } from "@/features/EditArticleForm/model/hooks/useArticle";
+import { fetchArticle } from "@/shared/api/services/article-service";
 import { useParams } from "react-router-dom";
 
 type ArticleFormProps = {
