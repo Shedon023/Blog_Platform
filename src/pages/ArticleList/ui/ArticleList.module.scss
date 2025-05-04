@@ -17,7 +17,7 @@
   padding: 16px;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: colors.$components-background;
+  background-color: colors.$secondary-backgroun;
   transition: all 0.3s ease;
 
   &:hover {
@@ -49,18 +49,18 @@
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 8px;
-  color: colors.$article-name;
+  color: colors.$blue;
 }
 
 .articleTags {
   font-size: 0.875rem;
-  color: colors.$tag;
+  color: colors.$grey-dark;
   margin-bottom: 12px;
 }
 
 .articleDescription {
   font-size: 1rem;
-  color: colors.$tag;
+  color: colors.$grey-dark;
   margin-bottom: 12px;
 }
 
@@ -68,12 +68,12 @@
   display: flex;
   justify-content: flex-end;
   font-size: 0.875rem;
-  color: colors.$tag;
+  color: colors.$grey-dark;
 }
 
 .articleDate {
   font-size: 0.75rem;
-  color: colors.$tag;
+  color: colors.$grey-dark;
 }
 
 .mainContent {
@@ -90,7 +90,7 @@
 }
 
 .articleTag {
-  border: 1px solid colors.$main-text-color;
+  border: 1px solid colors.$primary-text-color;
   padding: 4px 8px;
   border-radius: 2px;
   font-size: 0.875rem;

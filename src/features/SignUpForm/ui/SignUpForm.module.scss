@@ -6,7 +6,7 @@
   align-items: center;
   min-height: fit-content;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  background-color: colors.$components-background;
+  background-color: colors.$secondary-backgroun;
   margin: 60px auto;
   padding: 32px;
   max-width: 400px;
@@ -18,7 +18,7 @@
   font-weight: 500;
   font-size: 20px;
   line-height: 28px;
-  color: colors.$main-text-color;
+  color: colors.$primary-text-color;
   padding: 48px 0 0 0;
   font-family: "Roboto";
 }
@@ -38,7 +38,7 @@
 }
 
 .errorText {
-  color: colors.$error-text-color;
+  color: colors.$red;
   font-size: 12px;
   height: 20px;
   margin-top: 4px;
@@ -56,13 +56,13 @@
   width: 328px;
   height: 40px;
   border-radius: 4px;
-  background-color: colors.$article-name;
+  background-color: colors.$blue;
   border: none;
   cursor: pointer;
 }
 
 .submitBtnDisabled {
-  background-color: colors.$submit-disabled;
+  background-color: colors.$grey-light;
   cursor: not-allowed;
 }
 

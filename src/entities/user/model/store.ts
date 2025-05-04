@@ -1,5 +1,11 @@
 import { create } from "zustand";
-import { UserStore } from "./types";
+import { User } from "./types";
+
+export type UserStore = {
+  user: User | null;
+  setUser: (user: User) => void;
+  logout: () => void;
+};
 
 export const useUserStore = create<UserStore>((set) => ({
   user: JSON.parse(localStorage.getItem("user") || "null"),

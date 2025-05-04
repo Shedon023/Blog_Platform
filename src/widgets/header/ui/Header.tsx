@@ -1,5 +1,5 @@
 import { Button, Typography, Avatar } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, replace } from "react-router-dom";
 import { useUserStore } from "@/entities/user/model/store";
 import styles from "./Header.module.scss";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,7 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    navigate("/", { replace: true });
   };
   return (
     <div className={styles.headerContainer}>

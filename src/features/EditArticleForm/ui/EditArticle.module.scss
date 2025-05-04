@@ -6,7 +6,7 @@
   align-items: center;
   height: 100%;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  background-color: colors.$components-background;
+  background-color: colors.$secondary-backgroun;
   margin: 60px auto;
   padding: 32px;
   max-width: 940px;
@@ -17,7 +17,7 @@
     font-weight: 500;
     font-size: 20px;
     line-height: 28px;
-    color: colors.$main-text-color;
+    color: colors.$primary-text-color;
     padding: 48px 0 0 0;
     font-family: "Roboto";
   }
@@ -41,7 +41,7 @@
     width: 320px;
     height: 40px;
     border-radius: 4px;
-    background-color: colors.$article-name;
+    background-color: colors.$blue;
     margin-top: 21px;
     border: none;
     cursor: pointer;
@@ -57,7 +57,7 @@
   .tagsLabel {
     font-weight: 500;
     font-size: 16px;
-    color: colors.$second-text-color;
+    color: colors.$secondary-text-color;
     margin-bottom: 8px;
     font-family: "Roboto";
   }

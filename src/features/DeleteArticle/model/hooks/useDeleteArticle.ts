@@ -1,12 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
 
 export const useDeleteArticle = () => {
   const navigate = useNavigate();
 
-  return useMutation<AxiosResponse, Error, string>({
+  const { mutate: deleteArticle } = useMutation<AxiosResponse, Error, string>({
     mutationFn: async (slug: string) => {
       const token = localStorage.getItem("token");
 
@@ -23,8 +22,13 @@ export const useDeleteArticle = () => {
       console.log("Статья удалена");
       navigate("/", { replace: true });
     },
+
     onError: (error) => {
       console.error("Ошибка при удалении статьи", error.message);
     },
   });
+
+  return {
+    deleteArticle,
+  };
 };

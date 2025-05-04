@@ -5,9 +5,3 @@ export type User = {
   token: string;
   username: string;
 };
-
-export type UserStore = {
-  user: User | null;
-  setUser: (user: User) => void;
-  logout: () => void;
-};

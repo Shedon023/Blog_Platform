@@ -28,7 +28,7 @@ const Article = () => {
   const { slug } = useParams<{ slug: string }>();
   const { data: article, isLoading, isError, error } = useArticle(slug!);
   const { data: user } = useGetUser();
-  const { mutate: deleteArticle } = useDeleteArticle();
+  const { deleteArticle } = useDeleteArticle();
   const favoriteMutation = useFavorite();
   const unfavoriteMutation = useUnfavorite();
 
