@@ -1,7 +1,7 @@
 import styles from "./EditArticle.module.scss";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TextField, FormControl, FormHelperText, Button, Box, CircularProgress } from "@mui/material";
+import { Button, Box, CircularProgress } from "@mui/material";
 import { editArticleSchema } from "../model/schema";
 import { EditArticleData } from "../model/types";
 import { useState, useEffect } from "react";
@@ -11,7 +11,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
+
+import { TextInput } from "@/shared/ui/TextInput";
 
 const EditArticleForm = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -19,23 +20,24 @@ const EditArticleForm = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState<string>("");
 
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    reset,
-  } = useForm<EditArticleData>({
+  const methods = useForm<EditArticleData>({
     resolver: zodResolver(editArticleSchema),
-    mode: "onSubmit",
+    mode: "onBlur",
+    defaultValues: {
+      title: "",
+      description: "",
+      body: "",
+      tagList: [],
+    },
   });
-
+  const { handleSubmit, reset } = methods;
   const { data: article, isLoading } = useQuery({
     queryKey: ["article", slug],
     queryFn: () => fetchArticle(slug!),
     enabled: !!slug,
   });
 
-  const editArticleMutation = useEditArticle(reset);
+  const editArticleMutation = useEditArticle();
 
   useEffect(() => {
     if (article) {
@@ -98,93 +100,83 @@ const EditArticleForm = () => {
   return (
     <div className={styles.editArticleContainer}>
       <span className={styles.formName}>Edit article</span>
-
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className={styles.forms}>
-          <FormControl margin="normal" error={!!errors.title}>
-            <TextField
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className={styles.forms}>
+            <TextInput
+              name="title"
               label="Title"
-              {...register("title")}
               placeholder="Title"
               variant="outlined"
               autoComplete="title"
               sx={{ width: 874 }}
             />
-            {errors.title && typeof errors.title.message === "string" && (
-              <FormHelperText>{errors.title.message}</FormHelperText>
-            )}
-          </FormControl>
 
-          <FormControl fullWidth margin="normal" error={!!errors.description}>
-            <TextField
+            <TextInput
+              name="description"
               label="Description"
-              {...register("description")}
               placeholder="description"
               variant="outlined"
               autoComplete="description"
             />
-            {errors.description && typeof errors.description.message === "string" && (
-              <FormHelperText>{errors.description.message}</FormHelperText>
-            )}
-          </FormControl>
 
-          <FormControl fullWidth margin="normal" error={!!errors.body}>
-            <TextareaAutosize
-              {...register("body")}
-              style={{
-                height: 200,
-                fontSize: 17,
-                padding: 10,
-                resize: "none",
-                overflowY: "auto",
-              }}
+            <TextInput
+              className={styles.textInput}
+              name="body"
               placeholder="Text"
               autoComplete="text"
+              multiline
+              minRows={4}
+              maxRows={20}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  alignItems: "flex-start",
+                },
+              }}
             />
-            {errors.body && typeof errors.body.message === "string" && (
-              <FormHelperText>{errors.body.message}</FormHelperText>
-            )}
-          </FormControl>
 
-          <div className={styles.tagsContainer}>
-            <span className={styles.tagsLabel}>Tags</span>
-            {tags.map((tag, index) => (
-              <div key={index} className={styles.tagItem}>
-                <TextField
-                  onChange={(e) => {
-                    const updatedTags = [...tags];
-                    updatedTags[index] = e.target.value;
-                    setTags(updatedTags);
-                  }}
-                  value={tag}
-                  sx={{ width: 300 }}
+            <div className={styles.tagsContainer}>
+              <span className={styles.tagsLabel}>Tags</span>
+              {tags.map((tag, index) => (
+                <div key={index} className={styles.tagItem}>
+                  <TextInput
+                    name="tagList"
+                    value={tag}
+                    sx={{ width: 300 }}
+                    onChange={(e) => {
+                      const updatedTags = [...tags];
+                      updatedTags[index] = e.target.value;
+                      setTags(updatedTags);
+                    }}
+                  />
+                  <Button variant="outlined" color="error" onClick={() => handleDeleteTag(index)}>
+                    Delete
+                  </Button>
+                </div>
+              ))}
+
+              <div className={styles.tagInputGroup}>
+                <TextInput
+                  className={styles.tagInput}
+                  name="tagList"
+                  value={newTag}
+                  onChange={(e) => setNewTag(e.target.value)}
+                  placeholder="Tag"
                 />
-                <Button variant="outlined" color="error" onClick={() => handleDeleteTag(index)}>
-                  Delete
+                <Button variant="outlined" onClick={handleAddTag} disabled={!newTag.trim()}>
+                  Add tag
                 </Button>
               </div>
-            ))}
+            </div>
 
-            <div className={styles.tagInputGroup}>
-              <TextField
-                value={newTag}
-                onChange={(e) => setNewTag(e.target.value)}
-                placeholder="Tag"
-                sx={{ width: 300 }}
-              />
-              <Button variant="outlined" onClick={handleAddTag} disabled={!newTag.trim()}>
-                Add tag
+            <div className={styles.footer}>
+              <Button type="submit" variant="contained" color="primary" className={styles.sendBtn}>
+                Send
               </Button>
             </div>
           </div>
-
-          <div className={styles.footer}>
-            <Button type="submit" variant="contained" color="primary" className={styles.sendBtn}>
-              Send
-            </Button>
-          </div>
-        </div>
-      </form>
+        </form>
+      </FormProvider>
     </div>
   );
 };

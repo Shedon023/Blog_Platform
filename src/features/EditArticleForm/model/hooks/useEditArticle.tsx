@@ -1,10 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
-import { UseFormReset } from "react-hook-form";
-import { EditArticleData, EditArticlePayload } from "../types";
+import { EditArticlePayload } from "../types";
 import { useNavigate } from "react-router-dom";
 
-export const useEditArticle = (reset: UseFormReset<EditArticleData>) => {
+export const useEditArticle = () => {
   const navigate = useNavigate();
 
   return useMutation({
@@ -35,8 +34,6 @@ export const useEditArticle = (reset: UseFormReset<EditArticleData>) => {
       if (data && data.article && data.article.slug) {
         navigate(`/articles/${data.article.slug}`);
       }
-
-      reset();
     },
     onError: (error: AxiosError) => {
       console.error("Ошибка при редактировании статьи", error);
