@@ -2,52 +2,53 @@ import styles from "./EditArticle.module.scss";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Box, CircularProgress } from "@mui/material";
-import { editArticleSchema } from "../model/schema";
-import { EditArticleData } from "../model/types";
+import { editArticleSchema } from "@/features/EditArticleForm/model/schema";
+import { EditArticleData } from "@/features/EditArticleForm/model/types";
 import { useState, useEffect } from "react";
-import { fetchArticle } from "../model/hooks/useArticle";
-import { useEditArticle } from "../model";
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
-import { AxiosError } from "axios";
-import { useNavigate } from "react-router-dom";
 import { TextInput } from "@/shared/ui/TextInput";
+import { NewArticleData } from "@/features/NewArticleForm/model/types";
+import { newArticleSchema } from "@/features/NewArticleForm/model/schema";
+import { fetchArticle } from "@/features/EditArticleForm/model/hooks/useArticle";
+import { useParams } from "react-router-dom";
 
-const EditArticleForm = () => {
+type ArticleFormProps = {
+  mode: "create" | "edit";
+  defaultValues?: NewArticleData | EditArticleData;
+  onSubmit: (data: NewArticleData | EditArticleData) => void;
+  isLoading?: boolean;
+};
+
+const ArticleForm = ({ mode, defaultValues, onSubmit, isLoading }: ArticleFormProps) => {
+  const [tags, setTags] = useState<string[]>(defaultValues?.tagList || []);
+  const [newTag, setNewTag] = useState("");
   const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
-  const [tags, setTags] = useState<string[]>([]);
-  const [newTag, setNewTag] = useState<string>("");
 
-  const methods = useForm<EditArticleData>({
-    resolver: zodResolver(editArticleSchema),
+  const methods = useForm<EditArticleData | NewArticleData>({
+    resolver: zodResolver(mode === "edit" ? editArticleSchema : newArticleSchema),
     mode: "onBlur",
     defaultValues: {
       title: "",
       description: "",
       body: "",
       tagList: [],
+      ...defaultValues,
     },
   });
-  const { handleSubmit, reset } = methods;
-  const { data: article, isLoading } = useQuery({
-    queryKey: ["article", slug],
-    queryFn: () => fetchArticle(slug!),
-    enabled: !!slug,
-  });
 
-  const editArticleMutation = useEditArticle();
+  const { handleSubmit, reset } = methods;
 
   useEffect(() => {
-    if (article) {
-      reset({
-        title: article.title,
-        description: article.description,
-        body: article.body,
+    if (mode === "edit" && slug) {
+      fetchArticle(slug).then((article) => {
+        reset({
+          title: article.title,
+          description: article.description,
+          body: article.body,
+        });
+        setTags(article.tagList || []);
       });
-      setTags(article.tagList || []);
     }
-  }, [article, reset]);
+  }, [mode, slug, reset]);
 
   const handleAddTag = () => {
     if (newTag.trim()) {
@@ -60,25 +61,11 @@ const EditArticleForm = () => {
     setTags((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const onSubmit = (formData: EditArticleData) => {
-    if (!slug) return;
-    editArticleMutation.mutate(
-      {
-        slug,
-        data: {
-          ...formData,
-          tagList: tags,
-        },
-      },
-      {
-        onSuccess: () => {
-          navigate(`/article/${slug}`);
-        },
-        onError: (error: AxiosError) => {
-          console.error("Failed to update article:", error);
-        },
-      }
-    );
+  const internalSubmit = (formData: any) => {
+    onSubmit({
+      ...formData,
+      tagList: tags,
+    });
   };
 
   if (isLoading) {
@@ -97,27 +84,14 @@ const EditArticleForm = () => {
   }
 
   return (
-    <div className={styles.editArticleContainer}>
-      <span className={styles.formName}>Edit article</span>
+    <div className={styles.articleFormContainer}>
+      <span className={styles.formName}>{mode === "edit" ? "Edit article" : "Create"}</span>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(internalSubmit)}>
           <div className={styles.forms}>
-            <TextInput
-              name="title"
-              label="Title"
-              placeholder="Title"
-              variant="outlined"
-              autoComplete="title"
-              sx={{ width: 874 }}
-            />
+            <TextInput name="title" label="Title" placeholder="Title" autoComplete="title" />
 
-            <TextInput
-              name="description"
-              label="Description"
-              placeholder="description"
-              variant="outlined"
-              autoComplete="description"
-            />
+            <TextInput name="description" label="Description" placeholder="description" autoComplete="description" />
 
             <TextInput
               className={styles.textInput}
@@ -141,12 +115,12 @@ const EditArticleForm = () => {
                   <TextInput
                     name="tagList"
                     value={tag}
-                    sx={{ width: 300 }}
                     onChange={(e) => {
                       const updatedTags = [...tags];
                       updatedTags[index] = e.target.value;
                       setTags(updatedTags);
                     }}
+                    sx={{ width: 300 }}
                   />
                   <Button variant="outlined" color="error" onClick={() => handleDeleteTag(index)}>
                     Delete
@@ -180,4 +154,4 @@ const EditArticleForm = () => {
   );
 };
 
-export default EditArticleForm;
+export default ArticleForm;

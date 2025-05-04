@@ -5,7 +5,7 @@ import SignUpPage from "@/pages/SignUpPage";
 import SignInPage from "@/pages/SignInPage";
 import EditProfilePage from "@/pages/EditProfilePage";
 import NewArticlePage from "@/pages/NewArticlePage";
-import MainLayout from "@/shared/ui/layout/MainLayout";
+import MainLayout from "../layout/MainLayout";
 import Article from "@/pages/Article/ui/Article";
 
 import EditArticlePage from "@/pages/EditArticlePage";
