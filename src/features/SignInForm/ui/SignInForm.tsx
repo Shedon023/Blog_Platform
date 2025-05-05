@@ -11,13 +11,11 @@ import { User } from "@/entities/user/model/types";
 import { TextInput } from "@/shared/ui/TextInput";
 
 const SignInForm = () => {
+  const defaultValues = signInSchema.parse({});
   const methods = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
     mode: "onBlur",
-    defaultValues: {
-      emailAdress: "",
-      password: "",
-    },
+    defaultValues: defaultValues,
   });
 
   const {

@@ -6,3 +6,7 @@ export type EditArticlePayload = {
   slug: string;
   data: EditArticleData;
 };
+
+export type SlugProp = {
+  slug: string | undefined;
+};

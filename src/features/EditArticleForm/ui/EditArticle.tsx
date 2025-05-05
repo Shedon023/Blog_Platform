@@ -3,31 +3,26 @@ import { FormProvider, useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Box, CircularProgress } from "@mui/material";
 import { editArticleSchema } from "../model/schema";
-import { EditArticleData } from "../model/types";
-import { useState, useEffect } from "react";
+import { EditArticleData, SlugProp } from "../model/types";
+import { useEffect } from "react";
 import { fetchArticle } from "@/shared/api/services/article-service";
 import { useEditArticle } from "../model";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { TextInput } from "@/shared/ui/TextInput";
+import { useIsMounted } from "@/shared/lib/hooks/useIsMounted";
 
-const EditArticleForm = () => {
-  const { slug } = useParams<{ slug: string }>();
+const EditArticleForm = ({ slug }: SlugProp) => {
+  const isMounted = useIsMounted();
   const navigate = useNavigate();
 
-  const [newTag, setNewTag] = useState<string>("");
+  const defaultValues = editArticleSchema.parse({});
 
   const methods = useForm<EditArticleData>({
     resolver: zodResolver(editArticleSchema),
     mode: "onBlur",
-    defaultValues: {
-      title: "",
-      description: "",
-      body: "",
-      tagList: [],
-    },
+    defaultValues: defaultValues,
   });
   const { control, handleSubmit, reset } = methods;
 
@@ -55,11 +50,10 @@ const EditArticleForm = () => {
     }
   }, [article, reset, replace]);
 
+  if (!isMounted()) return null;
+
   const handleAddTag = () => {
-    if (newTag.trim()) {
-      append(newTag.trim());
-      setNewTag("");
-    }
+    append("");
   };
 
   const onSubmit = (formData: EditArticleData) => {
@@ -145,14 +139,7 @@ const EditArticleForm = () => {
               ))}
 
               <div className={styles.tagInputGroup}>
-                <TextInput
-                  className={styles.tagInput}
-                  name="tagList"
-                  value={newTag}
-                  onChange={(e) => setNewTag(e.target.value)}
-                  placeholder="Tag"
-                />
-                <Button variant="outlined" onClick={handleAddTag} disabled={!newTag.trim()}>
+                <Button variant="outlined" onClick={handleAddTag}>
                   Add tag
                 </Button>
               </div>

@@ -1,5 +1,5 @@
 import styles from "./EditProfile.module.scss";
-import { FormProvider, useFieldArray, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { editProfileSchema } from "../model/schema";
 import { EditProfileData } from "../model/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,15 +13,12 @@ const EditProfileForm = () => {
   const user = useUserStore((state) => state.user);
   const { mutateAsync } = useEditProfile();
 
+  const defaultValues = editProfileSchema.parse({});
+
   const methods = useForm<EditProfileData>({
     resolver: zodResolver(editProfileSchema),
     mode: "onBlur",
-    defaultValues: {
-      userName: "",
-      emailAdress: "",
-      newPassword: "",
-      avatarImage: "",
-    },
+    defaultValues: defaultValues,
   });
 
   const { handleSubmit, reset } = methods;
