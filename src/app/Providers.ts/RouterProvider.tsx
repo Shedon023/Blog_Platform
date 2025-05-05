@@ -4,7 +4,7 @@ import ArcticleList from "@/pages/ArticleList/ui/ArticleList";
 import SignUpPage from "@/pages/SignUpPage";
 import SignInPage from "@/pages/SignInPage";
 import EditProfilePage from "@/pages/EditProfilePage";
-import NewArticlePage from "@/pages/NewArticlePage";
+import CreateArticlePage from "@/pages/CreateArticlePage";
 import MainLayout from "../layout/MainLayout";
 import Article from "@/pages/Article/ui/Article";
 
@@ -23,7 +23,7 @@ const RouterProvider = ({ children }: RouterProviderProps) => {
           <Route path="sign-up" element={<SignUpPage />} />
           <Route path="sign-in" element={<SignInPage />} />
           <Route path="editProfile" element={<EditProfilePage />} />
-          <Route path="newArticle" element={<NewArticlePage />} />
+          <Route path="newArticle" element={<CreateArticlePage />} />
           <Route path="editArticle/:slug" element={<EditArticlePage />} />
         </Route>
       </Routes>

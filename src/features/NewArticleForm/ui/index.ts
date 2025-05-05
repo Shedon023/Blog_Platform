@@ -1,1 +1,1 @@
-export * from "./NewArticleForm";
+export * from "./CreateArticleForm";

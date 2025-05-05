@@ -1,4 +1,4 @@
-import styles from "./NewArticle.module.scss";
+import styles from "./CreateArticle.module.scss";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Box, CircularProgress } from "@mui/material";
@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useNewArticle } from "../model/hooks/useNewArticle";
 import { TextInput } from "@/shared/ui/TextInput";
 
-const NewArticleForm = () => {
+const CreateArticleForm = () => {
   const [newTag, setNewTag] = useState<string>("");
 
   const methods = useForm<NewArticleData>({
@@ -126,4 +126,4 @@ const NewArticleForm = () => {
   );
 };
 
-export default NewArticleForm;
+export default CreateArticleForm;

@@ -1,5 +1,5 @@
 import styles from "./EditArticle.module.scss";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Box, CircularProgress } from "@mui/material";
 import { editArticleSchema } from "@/features/EditArticleForm/model/schema";
@@ -19,7 +19,6 @@ type ArticleFormProps = {
 };
 
 const ArticleForm = ({ mode, defaultValues, onSubmit, isLoading }: ArticleFormProps) => {
-  const [tags, setTags] = useState<string[]>(defaultValues?.tagList || []);
   const [newTag, setNewTag] = useState("");
   const { slug } = useParams<{ slug: string }>();
 
@@ -35,7 +34,12 @@ const ArticleForm = ({ mode, defaultValues, onSubmit, isLoading }: ArticleFormPr
     },
   });
 
-  const { handleSubmit, reset } = methods;
+  const { control, handleSubmit, reset } = methods;
+
+  const { fields, append, remove, replace } = useFieldArray({
+    control,
+    name: "tagList" as never,
+  });
 
   useEffect(() => {
     if (mode === "edit" && slug) {
@@ -45,26 +49,21 @@ const ArticleForm = ({ mode, defaultValues, onSubmit, isLoading }: ArticleFormPr
           description: article.description,
           body: article.body,
         });
-        setTags(article.tagList || []);
+        replace(article.tagList || []);
       });
     }
-  }, [mode, slug, reset]);
+  }, [mode, slug, reset, replace]);
 
   const handleAddTag = () => {
     if (newTag.trim()) {
-      setTags((prev) => [...prev, newTag.trim()]);
+      append(newTag.trim());
       setNewTag("");
     }
-  };
-
-  const handleDeleteTag = (index: number) => {
-    setTags((prev) => prev.filter((_, i) => i !== index));
   };
 
   const internalSubmit = (formData: any) => {
     onSubmit({
       ...formData,
-      tagList: tags,
     });
   };
 
@@ -88,6 +87,8 @@ const ArticleForm = ({ mode, defaultValues, onSubmit, isLoading }: ArticleFormPr
       <span className={styles.formName}>{mode === "edit" ? "Edit article" : "Create"}</span>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(internalSubmit)}>
+          {" "}
+          // ????????
           <div className={styles.forms}>
             <TextInput name="title" label="Title" placeholder="Title" autoComplete="title" />
 
@@ -110,19 +111,10 @@ const ArticleForm = ({ mode, defaultValues, onSubmit, isLoading }: ArticleFormPr
 
             <div className={styles.tagsContainer}>
               <span className={styles.tagsLabel}>Tags</span>
-              {tags.map((tag, index) => (
-                <div key={index} className={styles.tagItem}>
-                  <TextInput
-                    name="tagList"
-                    value={tag}
-                    onChange={(e) => {
-                      const updatedTags = [...tags];
-                      updatedTags[index] = e.target.value;
-                      setTags(updatedTags);
-                    }}
-                    sx={{ width: 300 }}
-                  />
-                  <Button variant="outlined" color="error" onClick={() => handleDeleteTag(index)}>
+              {fields.map((field, index) => (
+                <div key={field.id} className={styles.tagItem}>
+                  <TextInput name={`tagList.${index}`} sx={{ width: 300 }} />
+                  <Button variant="outlined" color="error" onClick={() => remove(index)}>
                     Delete
                   </Button>
                 </div>
