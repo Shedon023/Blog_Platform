@@ -1,5 +1,5 @@
 import styles from "./EditArticle.module.scss";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Box, CircularProgress } from "@mui/material";
 import { editArticleSchema } from "../model/schema";
@@ -16,7 +16,7 @@ import { TextInput } from "@/shared/ui/TextInput";
 const EditArticleForm = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const [tags, setTags] = useState<string[]>([]);
+
   const [newTag, setNewTag] = useState<string>("");
 
   const methods = useForm<EditArticleData>({
@@ -29,7 +29,13 @@ const EditArticleForm = () => {
       tagList: [],
     },
   });
-  const { handleSubmit, reset } = methods;
+  const { control, handleSubmit, reset } = methods;
+
+  const { fields, append, remove, replace } = useFieldArray({
+    control,
+    name: "tagList" as never,
+  });
+
   const { data: article, isLoading } = useQuery({
     queryKey: ["article", slug],
     queryFn: () => fetchArticle(slug!),
@@ -45,19 +51,15 @@ const EditArticleForm = () => {
         description: article.description,
         body: article.body,
       });
-      setTags(article.tagList || []);
+      replace(article.tagList || []);
     }
-  }, [article, reset]);
+  }, [article, reset, replace]);
 
   const handleAddTag = () => {
     if (newTag.trim()) {
-      setTags((prev) => [...prev, newTag.trim()]);
+      append(newTag.trim());
       setNewTag("");
     }
-  };
-
-  const handleDeleteTag = (index: number) => {
-    setTags((prev) => prev.filter((_, i) => i !== index));
   };
 
   const onSubmit = (formData: EditArticleData) => {
@@ -65,10 +67,7 @@ const EditArticleForm = () => {
     editArticleMutation.mutate(
       {
         slug,
-        data: {
-          ...formData,
-          tagList: tags,
-        },
+        data: formData,
       },
       {
         onSuccess: () => {
@@ -136,19 +135,10 @@ const EditArticleForm = () => {
 
             <div className={styles.tagsContainer}>
               <span className={styles.tagsLabel}>Tags</span>
-              {tags.map((tag, index) => (
-                <div key={index} className={styles.tagItem}>
-                  <TextInput
-                    name="tagList"
-                    value={tag}
-                    sx={{ width: 300 }}
-                    onChange={(e) => {
-                      const updatedTags = [...tags];
-                      updatedTags[index] = e.target.value;
-                      setTags(updatedTags);
-                    }}
-                  />
-                  <Button variant="outlined" color="error" onClick={() => handleDeleteTag(index)}>
+              {fields.map((field, index) => (
+                <div key={field.id} className={styles.tagItem}>
+                  <TextInput name={`tagList.${index}`} sx={{ width: 300 }} />
+                  <Button variant="outlined" color="error" onClick={() => remove(index)}>
                     Delete
                   </Button>
                 </div>

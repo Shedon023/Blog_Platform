@@ -1,5 +1,5 @@
 import styles from "./EditProfile.module.scss";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { editProfileSchema } from "../model/schema";
 import { EditProfileData } from "../model/types";
 import { zodResolver } from "@hookform/resolvers/zod";

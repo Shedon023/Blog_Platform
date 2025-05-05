@@ -1,5 +1,5 @@
 import styles from "./NewArticle.module.scss";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Box, CircularProgress } from "@mui/material";
 import { newArticleSchema } from "../model/schema";
@@ -9,7 +9,6 @@ import { useNewArticle } from "../model/hooks/useNewArticle";
 import { TextInput } from "@/shared/ui/TextInput";
 
 const NewArticleForm = () => {
-  const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState<string>("");
 
   const methods = useForm<NewArticleData>({
@@ -23,25 +22,24 @@ const NewArticleForm = () => {
     },
   });
 
-  const { handleSubmit, setError } = methods;
+  const { control, handleSubmit, setError } = methods;
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "tagList" as never,
+  });
 
   const handleAddTag = () => {
     if (newTag.trim()) {
-      setTags((prev) => [...prev, newTag.trim()]);
+      append(newTag.trim());
       setNewTag("");
     }
-  };
-
-  const handleDeleteTag = (index: number) => {
-    setTags((prev) => prev.filter((_, i) => i !== index));
   };
 
   const { createArticle, isLoading } = useNewArticle(setError);
 
   const onSubmit = async (data: NewArticleData) => {
-    const formData = { ...data, tagList: tags };
     try {
-      await createArticle(formData);
+      await createArticle(data);
     } catch (error) {}
   };
 
@@ -93,19 +91,10 @@ const NewArticleForm = () => {
 
             <div className={styles.tagsContainer}>
               <span className={styles.tagsLabel}>Tags</span>
-              {tags.map((tag, index) => (
-                <div key={index} className={styles.tagItem}>
-                  <TextInput
-                    name="tagList"
-                    value={tag}
-                    sx={{ width: 300 }}
-                    onChange={(e) => {
-                      const updatedTags = [...tags];
-                      updatedTags[index] = e.target.value;
-                      setTags(updatedTags);
-                    }}
-                  />
-                  <Button variant="outlined" color="error" onClick={() => handleDeleteTag(index)}>
+              {fields.map((field, index) => (
+                <div key={field.id} className={styles.tagItem}>
+                  <TextInput name={`tagList.${index}`} sx={{ width: 300 }} />
+                  <Button variant="outlined" color="error" onClick={() => remove(index)}>
                     Delete
                   </Button>
                 </div>
