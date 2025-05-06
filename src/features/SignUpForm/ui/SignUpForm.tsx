@@ -20,9 +20,7 @@ const SignUpForm = () => {
   const { signUpMutation, isLoading } = useSignUp(setError);
 
   const onSubmit = async (data: SignUpData) => {
-    try {
-      await signUpMutation(data);
-    } catch (error) {}
+    await signUpMutation(data);
   };
 
   const agreeTerms = watch("agreeTerms");
