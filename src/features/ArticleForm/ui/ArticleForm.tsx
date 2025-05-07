@@ -9,21 +9,16 @@ import { TextInput } from "@/shared/ui/TextInput";
 import { NewArticleData } from "@/features/NewArticleForm/model/types";
 import { newArticleSchema } from "@/features/NewArticleForm/model/schema";
 import { useNavigate } from "react-router-dom";
-import { useIsMounted } from "@/shared/lib/hooks/useIsMounted";
+// import { useIsMounted } from "@/shared/lib/hooks/useIsMounted";
 import { useNewArticle } from "@/features/NewArticleForm/model";
 import { fetchArticle } from "@/shared/api/services/article-service";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useEditArticle } from "@/features/EditArticleForm/model";
-
-type ArticleFormProps = {
-  mode: "create" | "edit";
-  defaultValues?: NewArticleData | EditArticleData;
-  slug: string | undefined;
-};
+import { ArticleFormProps } from "../model/types";
 
 const ArticleForm = ({ mode, defaultValues, slug }: ArticleFormProps) => {
-  const isMounted = useIsMounted();
+  // const isMounted = useIsMounted();
   const navigate = useNavigate();
 
   const methods = useForm<EditArticleData | NewArticleData>({
