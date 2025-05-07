@@ -19,7 +19,7 @@ const RouterProvider = ({ children }: RouterProviderProps) => {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<ArcticleList />} />
-          <Route path="/article/:slug" element={<Article />} />
+          <Route path="article/:slug" element={<Article />} />
           <Route path="sign-up" element={<SignUpPage />} />
           <Route path="sign-in" element={<SignInPage />} />
           <Route path="editProfile" element={<EditProfilePage />} />

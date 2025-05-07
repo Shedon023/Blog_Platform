@@ -1,5 +1,5 @@
 import { Button, Typography, Avatar } from "@mui/material";
-import { Link, replace } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useUserStore } from "@/entities/user/model/store";
 import styles from "./Header.module.scss";
 import { useNavigate } from "react-router-dom";
@@ -22,13 +22,13 @@ const Header = () => {
         {user ? (
           <>
             <div className={styles.userInfo}>
-              <Button variant="outlined" color="success" component={Link} to={"/newArticle"}>
+              <Button variant="outlined" color="success" component={Link} to="/newArticle">
                 Create article
               </Button>
-              <Typography variant="body1" className={styles.userName} component={Link} to={`/editProfile`}>
+              <Typography variant="body1" className={styles.userName} component={Link} to="/editProfile">
                 {user.username}
               </Typography>
-              <Avatar src={user.image || ""} alt={user.username} component={Link} to={`/editProfile`} />
+              <Avatar src={user.image || ""} alt={user.username} component={Link} to="/editProfile" />
             </div>
             <Button variant="outlined" color="error" onClick={handleLogout}>
               Logout

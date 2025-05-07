@@ -1,13 +1,9 @@
-import EditArticleForm from "@/features/EditArticleForm/ui/EditArticle";
+import ArticleForm from "@/features/ArticleForm/ui/ArticleForm";
 import { useParams } from "react-router-dom";
 
 const EditProfilePage = () => {
   const { slug } = useParams<{ slug: string }>();
-  return (
-    <div>
-      <EditArticleForm slug={slug} />
-    </div>
-  );
+  return <ArticleForm slug={slug} mode="edit" />;
 };
 
 export default EditProfilePage;

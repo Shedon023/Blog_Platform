@@ -1,26 +1,30 @@
-import styles from "./EditArticle.module.scss";
-import { FormProvider, useForm, useFieldArray } from "react-hook-form";
+import styles from "./ArticleForm.module.scss";
+import { FormProvider, useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Box, CircularProgress } from "@mui/material";
 import { editArticleSchema } from "@/features/EditArticleForm/model/schema";
 import { EditArticleData } from "@/features/EditArticleForm/model/types";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { TextInput } from "@/shared/ui/TextInput";
 import { NewArticleData } from "@/features/NewArticleForm/model/types";
 import { newArticleSchema } from "@/features/NewArticleForm/model/schema";
+import { useNavigate } from "react-router-dom";
+import { useIsMounted } from "@/shared/lib/hooks/useIsMounted";
+import { useNewArticle } from "@/features/NewArticleForm/model";
 import { fetchArticle } from "@/shared/api/services/article-service";
-import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { useEditArticle } from "@/features/EditArticleForm/model";
 
 type ArticleFormProps = {
   mode: "create" | "edit";
   defaultValues?: NewArticleData | EditArticleData;
-  onSubmit: (data: NewArticleData | EditArticleData) => void;
-  isLoading?: boolean;
+  slug: string | undefined;
 };
 
-const ArticleForm = ({ mode, defaultValues, onSubmit, isLoading }: ArticleFormProps) => {
-  const [newTag, setNewTag] = useState("");
-  const { slug } = useParams<{ slug: string }>();
+const ArticleForm = ({ mode, defaultValues, slug }: ArticleFormProps) => {
+  const isMounted = useIsMounted();
+  const navigate = useNavigate();
 
   const methods = useForm<EditArticleData | NewArticleData>({
     resolver: zodResolver(mode === "edit" ? editArticleSchema : newArticleSchema),
@@ -34,37 +38,70 @@ const ArticleForm = ({ mode, defaultValues, onSubmit, isLoading }: ArticleFormPr
     },
   });
 
-  const { control, handleSubmit, reset } = methods;
+  const { control, handleSubmit, reset, setError } = methods;
 
   const { fields, append, remove, replace } = useFieldArray({
     control,
     name: "tagList" as never,
   });
 
-  useEffect(() => {
-    if (mode === "edit" && slug) {
-      fetchArticle(slug).then((article) => {
-        reset({
-          title: article.title,
-          description: article.description,
-          body: article.body,
-        });
-        replace(article.tagList || []);
-      });
-    }
-  }, [mode, slug, reset, replace]);
+  const { data: article, isLoading } = useQuery({
+    queryKey: ["article", slug],
+    queryFn: () => fetchArticle(slug!),
+    enabled: mode === "edit" && !!slug,
+  });
+
+  const { createArticle } = useNewArticle(setError);
+
+  const editArticleMutation = useEditArticle();
 
   const handleAddTag = () => {
-    if (newTag.trim()) {
-      append(newTag.trim());
-      setNewTag("");
-    }
+    append("");
   };
 
-  const internalSubmit = (formData: any) => {
-    onSubmit({
-      ...formData,
-    });
+  useEffect(() => {
+    if (mode === "edit" && article) {
+      reset({
+        title: article.title,
+        description: article.description,
+        body: article.body,
+      });
+      replace(article.tagList || []);
+    }
+  }, [article, reset, replace]);
+
+  // if (!isMounted()) return null;
+
+  const tagValues = useWatch({
+    control,
+    name: "tagList",
+    defaultValue: [],
+  });
+
+  const hasEmptyTag = tagValues?.some((tag) => !tag?.trim());
+
+  const onSubmit = async (formData: EditArticleData | NewArticleData) => {
+    const filteredTags = formData.tagList?.filter((tag) => tag?.trim()) || [];
+
+    if (mode === "create") {
+      await createArticle({ ...(formData as NewArticleData), tagList: filteredTags });
+    } else if (mode === "edit") {
+      if (!slug) return;
+      editArticleMutation.mutate(
+        {
+          slug,
+          data: formData,
+        },
+        {
+          onSuccess: () => {
+            navigate(`/article/${slug}`);
+          },
+          onError: (error: AxiosError) => {
+            console.error("Failed to update article:", error);
+          },
+        }
+      );
+    }
   };
 
   if (isLoading) {
@@ -86,13 +123,17 @@ const ArticleForm = ({ mode, defaultValues, onSubmit, isLoading }: ArticleFormPr
     <div className={styles.articleFormContainer}>
       <span className={styles.formName}>{mode === "edit" ? "Edit article" : "Create"}</span>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(internalSubmit)}>
-          {" "}
-          // ????????
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className={styles.forms}>
-            <TextInput name="title" label="Title" placeholder="Title" autoComplete="title" />
+            <TextInput className={styles.input} name="title" label="Title" placeholder="Title" autoComplete="title" />
 
-            <TextInput name="description" label="Description" placeholder="description" autoComplete="description" />
+            <TextInput
+              className={styles.input}
+              name="description"
+              label="Description"
+              placeholder="description"
+              autoComplete="description"
+            />
 
             <TextInput
               className={styles.textInput}
@@ -121,14 +162,7 @@ const ArticleForm = ({ mode, defaultValues, onSubmit, isLoading }: ArticleFormPr
               ))}
 
               <div className={styles.tagInputGroup}>
-                <TextInput
-                  className={styles.tagInput}
-                  name="tagList"
-                  value={newTag}
-                  onChange={(e) => setNewTag(e.target.value)}
-                  placeholder="Tag"
-                />
-                <Button variant="outlined" onClick={handleAddTag} disabled={!newTag.trim()}>
+                <Button variant="outlined" onClick={handleAddTag} disabled={mode === "create" && hasEmptyTag}>
                   Add tag
                 </Button>
               </div>

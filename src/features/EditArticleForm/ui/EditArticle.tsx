@@ -95,22 +95,9 @@ const EditArticleForm = ({ slug }: SlugProp) => {
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className={styles.forms}>
-            <TextInput
-              name="title"
-              label="Title"
-              placeholder="Title"
-              variant="outlined"
-              autoComplete="title"
-              sx={{ width: 874 }}
-            />
+            <TextInput name="title" label="Title" placeholder="Title" autoComplete="title" sx={{ width: 874 }} />
 
-            <TextInput
-              name="description"
-              label="Description"
-              placeholder="description"
-              variant="outlined"
-              autoComplete="description"
-            />
+            <TextInput name="description" label="Description" placeholder="description" autoComplete="description" />
 
             <TextInput
               className={styles.textInput}
