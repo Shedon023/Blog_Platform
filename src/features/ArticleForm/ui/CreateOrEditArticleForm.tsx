@@ -1,4 +1,4 @@
-import styles from "./ArticleForm.module.scss";
+import styles from "./CreateOrEditArticleForm.module.scss";
 import { FormProvider, useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Box, CircularProgress } from "@mui/material";
@@ -8,29 +8,20 @@ import { useEffect } from "react";
 import { TextInput } from "@/shared/ui/TextInput";
 import { NewArticleData } from "../model/schema";
 import { newArticleSchema } from "../model/schema";
-import { useNavigate } from "react-router-dom";
 // import { useIsMounted } from "@/shared/lib/hooks/useIsMounted";
 import { useNewArticle } from "../model";
-import { fetchArticle } from "@/shared/api/services/article-service";
-import { useQuery } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { useEditArticle } from "../model";
 import { ArticleFormProps } from "../model/types";
+import { useArticleBySlug } from "../model/hooks/useArticleBySlug";
 
-const ArticleForm = ({ mode, defaultValues, slug }: ArticleFormProps) => {
+const CreateOrEditArticleForm = ({ mode, slug }: ArticleFormProps) => {
   // const isMounted = useIsMounted();
-  const navigate = useNavigate();
 
+  const defaultValues = editArticleSchema.parse({});
   const methods = useForm<EditArticleData | NewArticleData>({
     resolver: zodResolver(mode === "edit" ? editArticleSchema : newArticleSchema),
     mode: "onBlur",
-    defaultValues: {
-      title: "",
-      description: "",
-      body: "",
-      tagList: [],
-      ...defaultValues,
-    },
+    defaultValues: defaultValues,
   });
 
   const { control, handleSubmit, reset, setError } = methods;
@@ -40,15 +31,17 @@ const ArticleForm = ({ mode, defaultValues, slug }: ArticleFormProps) => {
     name: "tagList" as never,
   });
 
-  const { data: article, isLoading } = useQuery({
-    queryKey: ["article", slug],
-    queryFn: () => fetchArticle(slug!),
-    enabled: mode === "edit" && !!slug,
-  });
+  const { data: article, isLoading } = useArticleBySlug(slug, mode === "edit");
 
   const { createArticle } = useNewArticle(setError);
 
   const editArticleMutation = useEditArticle();
+
+  const tagValues = useWatch({
+    control,
+    name: "tagList",
+    defaultValue: [],
+  });
 
   const handleAddTag = () => {
     append("");
@@ -67,12 +60,6 @@ const ArticleForm = ({ mode, defaultValues, slug }: ArticleFormProps) => {
 
   // if (!isMounted()) return null;
 
-  const tagValues = useWatch({
-    control,
-    name: "tagList",
-    defaultValue: [],
-  });
-
   const hasEmptyTag = tagValues?.some((tag) => !tag?.trim());
 
   const onSubmit = async (formData: EditArticleData | NewArticleData) => {
@@ -82,20 +69,10 @@ const ArticleForm = ({ mode, defaultValues, slug }: ArticleFormProps) => {
       await createArticle({ ...(formData as NewArticleData), tagList: filteredTags });
     } else if (mode === "edit") {
       if (!slug) return;
-      editArticleMutation.mutate(
-        {
-          slug,
-          data: formData,
-        },
-        {
-          onSuccess: () => {
-            navigate(`/article/${slug}`);
-          },
-          onError: (error: AxiosError) => {
-            console.error("Failed to update article:", error);
-          },
-        }
-      );
+      editArticleMutation.mutate({
+        slug,
+        data: formData,
+      });
     }
   };
 
@@ -175,4 +152,4 @@ const ArticleForm = ({ mode, defaultValues, slug }: ArticleFormProps) => {
   );
 };
 
-export default ArticleForm;
+export default CreateOrEditArticleForm;

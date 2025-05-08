@@ -32,7 +32,7 @@ export const useEditArticle = () => {
       console.log("Статья отредактирована");
 
       if (data && data.article && data.article.slug) {
-        navigate(`/articles/${data.article.slug}`);
+        navigate(`/article/${data.article.slug}`);
       }
     },
     onError: (error: AxiosError) => {
