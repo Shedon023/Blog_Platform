@@ -35,7 +35,6 @@ const FavoriteButton = ({ slug, initialFavorited, initialCount }: FavoriteButton
     const newFavorited = !currentState.favorited;
     const newCount = newFavorited ? currentState.count + 1 : currentState.count - 1;
 
-    // Обновляем локальное состояние
     setLocalFavorites((prev) => ({
       ...prev,
       [slug]: {
@@ -44,7 +43,6 @@ const FavoriteButton = ({ slug, initialFavorited, initialCount }: FavoriteButton
       },
     }));
 
-    // Вызов мутаций для лайка/дизлайка
     if (newFavorited) {
       favoriteMutation.mutate(slug);
     } else {

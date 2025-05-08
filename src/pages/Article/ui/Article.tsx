@@ -14,21 +14,11 @@ import {
 } from "@mui/material";
 import { useArticle } from "../model/hooks/useArticle"; //
 import { useDeleteArticle } from "@/features/DeleteArticle/model/hooks";
-import React, { useState } from "react";
-
+import { useState } from "react";
 import Markdown from "markdown-to-jsx";
 import { useGetUser } from "../model/hooks/useGetUser";
 import { Loader } from "@/shared/ui/Loader";
-import FavoriteButton from "@/features/Toggle-favorite/ui/FavoriteButton";
-
-type ArticleProps = {
-  actionSlot?: (params: {
-    slug: string;
-    favorited: boolean;
-    favoritesCount: number;
-    onToggleFavorite: () => void;
-  }) => React.ReactNode;
-};
+import { ArticleProps } from "../model/types";
 
 const Article = ({ actionSlot }: ArticleProps) => {
   const { slug } = useParams<{ slug: string }>();
@@ -63,13 +53,13 @@ const Article = ({ actionSlot }: ArticleProps) => {
                 <Typography variant="h5" className={styles.articleTitle}>
                   {article.title}
                 </Typography>
-                <Box className={styles.likes}>
-                  <FavoriteButton
-                    slug={article.slug}
-                    initialFavorited={article.favorited}
-                    initialCount={article.favoritesCount}
-                  />
-                </Box>
+                {actionSlot &&
+                  actionSlot({
+                    slug: article.slug,
+                    favorited: article.favorited,
+                    favoritesCount: article.favoritesCount,
+                    onToggleFavorite: () => {},
+                  })}
               </Box>
 
               <Box className={styles.tagWrapper}>
