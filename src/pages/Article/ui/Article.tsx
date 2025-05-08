@@ -11,18 +11,15 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Checkbox,
 } from "@mui/material";
 import { useArticle } from "../model/hooks/useArticle"; //
 import { useDeleteArticle } from "@/features/DeleteArticle/model/hooks";
-import React, { useEffect, useState } from "react";
-import Favorite from "@mui/icons-material/Favorite";
-import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
-import { useFavorite } from "@/pages/ArticleList/model/hooks/useFavorite";
-import { useUnfavorite } from "@/pages/ArticleList/model/hooks/useUnfavorite";
+import React, { useState } from "react";
+
 import Markdown from "markdown-to-jsx";
 import { useGetUser } from "../model/hooks/useGetUser";
 import { Loader } from "@/shared/ui/Loader";
+import FavoriteButton from "@/features/Toggle-favorite/ui/FavoriteButton";
 
 type ArticleProps = {
   actionSlot?: (params: {
@@ -38,59 +35,14 @@ const Article = ({ actionSlot }: ArticleProps) => {
   const { data: article, isLoading, isError, error } = useArticle(slug!);
   const { data: user } = useGetUser();
   const { deleteArticle } = useDeleteArticle();
-  const favoriteMutation = useFavorite();
-  const unfavoriteMutation = useUnfavorite();
 
   const [openModal, setOpenModal] = useState(false);
-  const [localFavorites, setLocalFavorites] = useState<Record<string, { favorited: boolean; count: number }>>({});
-
-  useEffect(() => {
-    const savedFavorites = localStorage.getItem("articleFavorites");
-    if (savedFavorites) {
-      setLocalFavorites(JSON.parse(savedFavorites));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("articleFavorites", JSON.stringify(localFavorites));
-  }, [localFavorites]);
-
-  const handleFavoriteChange = () => {
-    if (!slug || !user) return;
-
-    const currentState = localFavorites[slug] || {
-      favorited: article?.favorited || false,
-      count: article?.favoritesCount || 0,
-    };
-
-    const newFavorited = !currentState.favorited;
-    const newCount = newFavorited ? currentState.count + 1 : currentState.count - 1;
-
-    setLocalFavorites((prev) => ({
-      ...prev,
-      [slug]: {
-        favorited: newFavorited,
-        count: newCount,
-      },
-    }));
-
-    if (newFavorited) {
-      favoriteMutation.mutate(slug);
-    } else {
-      unfavoriteMutation.mutate(slug);
-    }
-  };
 
   if (isLoading) return <Loader />;
   if (isError) return <div>Ошибка: {(error as Error).message}</div>;
   if (!article) return <div>Статья не найдена</div>;
 
   const isAuthor = user?.username === article.author.username;
-
-  const favoriteState = localFavorites[slug!] || {
-    favorited: article.favorited,
-    count: article.favoritesCount,
-  };
 
   const handleModalOpen = () => setOpenModal(true);
   const handleModalClose = () => setOpenModal(false);
@@ -112,21 +64,11 @@ const Article = ({ actionSlot }: ArticleProps) => {
                   {article.title}
                 </Typography>
                 <Box className={styles.likes}>
-                  <Checkbox
-                    icon={<FavoriteBorder />}
-                    checkedIcon={<Favorite />}
-                    checked={favoriteState.favorited}
-                    onChange={handleFavoriteChange}
-                    sx={{
-                      color: "grey.500",
-                      "&.Mui-checked": {
-                        color: "red",
-                      },
-                      padding: 0,
-                      marginRight: 1,
-                    }}
+                  <FavoriteButton
+                    slug={article.slug}
+                    initialFavorited={article.favorited}
+                    initialCount={article.favoritesCount}
                   />
-                  <Typography variant="body2">{favoriteState.count}</Typography>
                 </Box>
               </Box>
 
@@ -172,14 +114,6 @@ const Article = ({ actionSlot }: ArticleProps) => {
             </Box>
           </Box>
           <Markdown className={styles.body}>{article.body}</Markdown>
-
-          {actionSlot &&
-            actionSlot({
-              slug: slug!,
-              favorited: favoriteState.favorited,
-              favoritesCount: favoriteState.count,
-              onToggleFavorite: handleFavoriteChange,
-            })}
         </CardContent>
       </Card>
 
