@@ -12,7 +12,6 @@ import {
   DialogContent,
   DialogTitle,
   Checkbox,
-  CircularProgress,
 } from "@mui/material";
 import { useArticle } from "../model/hooks/useArticle"; //
 import { useDeleteArticle } from "@/features/DeleteArticle/model/hooks";
@@ -23,6 +22,7 @@ import { useFavorite } from "@/pages/ArticleList/model/hooks/useFavorite";
 import { useUnfavorite } from "@/pages/ArticleList/model/hooks/useUnfavorite";
 import Markdown from "markdown-to-jsx";
 import { useGetUser } from "../model/hooks/useGetUser";
+import { Loader } from "@/shared/ui/Loader";
 
 type ArticleProps = {
   actionSlot?: (params: {
@@ -81,19 +81,7 @@ const Article = ({ actionSlot }: ArticleProps) => {
     }
   };
 
-  if (isLoading)
-    return (
-      <Box
-        sx={{
-          height: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
+  if (isLoading) return <Loader />;
   if (isError) return <div>Ошибка: {(error as Error).message}</div>;
   if (!article) return <div>Статья не найдена</div>;
 

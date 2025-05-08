@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { EditArticlePayload } from "../types";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "@/shared/config/env";
 
 export const useEditArticle = () => {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export const useEditArticle = () => {
       const token = localStorage.getItem("token");
 
       const response = await axios.put(
-        `https://blog-platform.kata.academy/api/articles/${slug}`,
+        `${API_URL}/articles/${slug}`,
         {
           article: {
             title: data.title,

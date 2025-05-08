@@ -1,3 +1,4 @@
+import { API_URL } from "@/shared/config/env";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -6,7 +7,7 @@ export const useFavorite = () => {
 
   const favorite = async (slug: string) => {
     const res = await axios.post(
-      `https://blog-platform.kata.academy/api/articles/${slug}/favorite`,
+      `${API_URL}/articles/${slug}/favorite`,
       {},
       { headers: { Authorization: `Token ${token}` } }
     );

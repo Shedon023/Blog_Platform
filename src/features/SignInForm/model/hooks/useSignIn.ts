@@ -3,6 +3,7 @@ import axios, { AxiosError } from "axios";
 import { SignInData } from "../types";
 import { UseFormSetError } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "@/shared/config/env";
 
 export const useSignIn = (
   setError: UseFormSetError<{
@@ -13,7 +14,7 @@ export const useSignIn = (
   const navigate = useNavigate();
   const mutation = useMutation({
     mutationFn: (userData: SignInData) =>
-      axios.post("https://blog-platform.kata.academy/api/users/login", {
+      axios.post(`${API_URL}/users/login`, {
         user: {
           email: userData.emailAdress,
           password: userData.password,

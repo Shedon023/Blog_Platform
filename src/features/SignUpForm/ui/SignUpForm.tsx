@@ -1,6 +1,6 @@
 import { useForm, FormProvider } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { Box, Button, CircularProgress } from "@mui/material";
+import { Button } from "@mui/material";
 import styles from "./SignUpForm.module.scss";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSignUp } from "../model";
@@ -8,6 +8,7 @@ import { signUpSchema } from "../model/schema";
 import { SignUpData } from "../model/types";
 import { TextInput } from "@/shared/ui/TextInput";
 import { CheckboxInput } from "@/shared/ui/CheckboxInput";
+import { Loader } from "@/shared/ui/Loader";
 
 const SignUpForm = () => {
   const methods = useForm<SignUpData>({
@@ -25,20 +26,7 @@ const SignUpForm = () => {
 
   const agreeTerms = watch("agreeTerms");
 
-  if (isLoading) {
-    return (
-      <Box
-        sx={{
-          height: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
+  if (isLoading) return <Loader />;
 
   return (
     <div className={styles.LoginPageContainer}>

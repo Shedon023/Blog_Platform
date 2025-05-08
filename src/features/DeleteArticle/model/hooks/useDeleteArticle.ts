@@ -1,3 +1,4 @@
+import { API_URL } from "@/shared/config/env";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +10,7 @@ export const useDeleteArticle = () => {
     mutationFn: async (slug: string) => {
       const token = localStorage.getItem("token");
 
-      const response = await axios.delete(`https://blog-platform.kata.academy/api/articles/${slug}`, {
+      const response = await axios.delete(`${API_URL}/articles/${slug}`, {
         headers: {
           Authorization: `Token ${token}`,
         },

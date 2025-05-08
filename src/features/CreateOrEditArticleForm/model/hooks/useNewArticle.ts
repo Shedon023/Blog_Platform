@@ -4,6 +4,7 @@ import { ArticleFormData } from "../types";
 import { UseFormSetError } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "@/entities/user/model/store";
+import { API_URL } from "@/shared/config/env";
 
 export const useNewArticle = (setError: UseFormSetError<ArticleFormData>) => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ export const useNewArticle = (setError: UseFormSetError<ArticleFormData>) => {
   const mutation = useMutation({
     mutationFn: (articleData: ArticleFormData) =>
       axios.post(
-        "https://blog-platform.kata.academy/api/articles",
+        `${API_URL}/articles`,
         {
           article: {
             title: articleData.title,

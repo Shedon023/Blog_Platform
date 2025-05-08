@@ -2,13 +2,14 @@ import styles from "./SignInForm.module.scss";
 import { useForm, FormProvider } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, Button, CircularProgress } from "@mui/material";
+import { Button } from "@mui/material";
 import { signInSchema } from "../model/schema";
 import { SignInData } from "../model/types";
 import { useSignIn } from "../model/hooks/useSignIn";
 import { useUserStore } from "@/entities/user/model/store";
 import { User } from "@/entities/user/model/types";
 import { TextInput } from "@/shared/ui/TextInput";
+import { Loader } from "@/shared/ui/Loader";
 
 const SignInForm = () => {
   const defaultValues = signInSchema.parse({});
@@ -42,20 +43,7 @@ const SignInForm = () => {
     } catch (err) {}
   };
 
-  if (isLoading) {
-    return (
-      <Box
-        sx={{
-          height: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
+  if (isLoading) return <Loader />;
 
   return (
     <div className={styles.signInContainer}>

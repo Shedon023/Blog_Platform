@@ -4,6 +4,7 @@ import { SignUpData } from "../types";
 import { UseFormSetError } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "@/entities/user/model/store";
+import { API_URL } from "@/shared/config/env";
 
 export const useSignUp = (setError: UseFormSetError<SignUpData>) => {
   const setUser = useUserStore((state) => state.setUser);
@@ -11,7 +12,7 @@ export const useSignUp = (setError: UseFormSetError<SignUpData>) => {
 
   const mutation = useMutation({
     mutationFn: (userData: SignUpData) =>
-      axios.post("https://blog-platform.kata.academy/api/users", {
+      axios.post(`${API_URL}/users`, {
         user: {
           username: userData.userName,
           email: userData.emailAdress,

@@ -1,7 +1,7 @@
 import styles from "./CreateOrEditArticleForm.module.scss";
 import { FormProvider, useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Box, CircularProgress } from "@mui/material";
+import { Button } from "@mui/material";
 import { editArticleSchema } from "../model/schema";
 import { EditArticleData } from "../model/schema";
 import { useEffect } from "react";
@@ -13,6 +13,7 @@ import { useNewArticle } from "../model";
 import { useEditArticle } from "../model";
 import { ArticleFormProps } from "../model/types";
 import { useArticleBySlug } from "../model/hooks/useArticleBySlug";
+import { Loader } from "@/shared/ui/Loader";
 
 const CreateOrEditArticleForm = ({ mode, slug }: ArticleFormProps) => {
   // const isMounted = useIsMounted();
@@ -64,7 +65,6 @@ const CreateOrEditArticleForm = ({ mode, slug }: ArticleFormProps) => {
 
   const onSubmit = async (formData: EditArticleData | NewArticleData) => {
     const filteredTags = formData.tagList?.filter((tag) => tag?.trim()) || [];
-
     if (mode === "create") {
       await createArticle({ ...(formData as NewArticleData), tagList: filteredTags });
     } else if (mode === "edit") {
@@ -76,20 +76,7 @@ const CreateOrEditArticleForm = ({ mode, slug }: ArticleFormProps) => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <Box
-        sx={{
-          height: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
+  if (isLoading) return <Loader />;
 
   return (
     <div className={styles.articleFormContainer}>

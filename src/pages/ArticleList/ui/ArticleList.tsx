@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useArticleList } from "../model/hooks/useArticleList";
 import styles from "./ArticleList.module.scss";
-import { Card, CardContent, Typography, Box, Avatar, Pagination, CircularProgress } from "@mui/material";
+import { Card, CardContent, Typography, Box, Avatar, Pagination } from "@mui/material";
 import { ArticleType } from "../model/types";
 import { Link, useSearchParams } from "react-router-dom";
 import Checkbox from "@mui/material/Checkbox";
@@ -10,6 +10,7 @@ import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import { useFavorite } from "../model/hooks/useFavorite";
 import { useUnfavorite } from "../model/hooks/useUnfavorite";
 import { useGetUser } from "@/pages/Article/model/hooks/useGetUser";
+import { Loader } from "@/shared/ui/Loader";
 
 const ArticleList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -74,19 +75,7 @@ const ArticleList = () => {
     }
   };
 
-  if (isLoading)
-    return (
-      <Box
-        sx={{
-          height: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
+  if (isLoading) return <Loader />;
   if (error) return <div>Ошибка: {error.message}</div>;
 
   return (

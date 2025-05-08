@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { EditProfileData } from "../types";
 import { useUserStore } from "@/entities/user/model/store";
+import { API_URL } from "@/shared/config/env";
 
 export const useEditProfile = () => {
   const setUser = useUserStore((state) => state.setUser);
@@ -11,7 +12,7 @@ export const useEditProfile = () => {
       const token = localStorage.getItem("token");
 
       const response = await axios.put(
-        "https://blog-platform.kata.academy/api/user",
+        `${API_URL}/user`,
         {
           user: {
             email: userData.emailAdress || undefined,
