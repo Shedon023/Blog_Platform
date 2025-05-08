@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { useArticle } from "../model/hooks/useArticle"; //
 import { useDeleteArticle } from "@/features/DeleteArticle/model/hooks";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Favorite from "@mui/icons-material/Favorite";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
 import { useFavorite } from "@/pages/ArticleList/model/hooks/useFavorite";
@@ -24,7 +24,16 @@ import { useUnfavorite } from "@/pages/ArticleList/model/hooks/useUnfavorite";
 import Markdown from "markdown-to-jsx";
 import { useGetUser } from "../model/hooks/useGetUser";
 
-const Article = () => {
+type ArticleProps = {
+  actionSlot?: (params: {
+    slug: string;
+    favorited: boolean;
+    favoritesCount: number;
+    onToggleFavorite: () => void;
+  }) => React.ReactNode;
+};
+
+const Article = ({ actionSlot }: ArticleProps) => {
   const { slug } = useParams<{ slug: string }>();
   const { data: article, isLoading, isError, error } = useArticle(slug!);
   const { data: user } = useGetUser();
@@ -175,6 +184,14 @@ const Article = () => {
             </Box>
           </Box>
           <Markdown className={styles.body}>{article.body}</Markdown>
+
+          {actionSlot &&
+            actionSlot({
+              slug: slug!,
+              favorited: favoriteState.favorited,
+              favoritesCount: favoriteState.count,
+              onToggleFavorite: handleFavoriteChange,
+            })}
         </CardContent>
       </Card>
 
