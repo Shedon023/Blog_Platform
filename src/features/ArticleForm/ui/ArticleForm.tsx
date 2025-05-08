@@ -2,19 +2,19 @@ import styles from "./ArticleForm.module.scss";
 import { FormProvider, useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Box, CircularProgress } from "@mui/material";
-import { editArticleSchema } from "@/features/EditArticleForm/model/schema";
-import { EditArticleData } from "@/features/EditArticleForm/model/types";
+import { editArticleSchema } from "../model/schema";
+import { EditArticleData } from "../model/schema";
 import { useEffect } from "react";
 import { TextInput } from "@/shared/ui/TextInput";
-import { NewArticleData } from "@/features/NewArticleForm/model/types";
-import { newArticleSchema } from "@/features/NewArticleForm/model/schema";
+import { NewArticleData } from "../model/schema";
+import { newArticleSchema } from "../model/schema";
 import { useNavigate } from "react-router-dom";
 // import { useIsMounted } from "@/shared/lib/hooks/useIsMounted";
-import { useNewArticle } from "@/features/NewArticleForm/model";
+import { useNewArticle } from "../model";
 import { fetchArticle } from "@/shared/api/services/article-service";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { useEditArticle } from "@/features/EditArticleForm/model";
+import { useEditArticle } from "../model";
 import { ArticleFormProps } from "../model/types";
 
 const ArticleForm = ({ mode, defaultValues, slug }: ArticleFormProps) => {
@@ -157,7 +157,7 @@ const ArticleForm = ({ mode, defaultValues, slug }: ArticleFormProps) => {
               ))}
 
               <div className={styles.tagInputGroup}>
-                <Button variant="outlined" onClick={handleAddTag} disabled={mode === "create" && hasEmptyTag}>
+                <Button variant="outlined" onClick={handleAddTag} disabled={hasEmptyTag}>
                   Add tag
                 </Button>
               </div>
