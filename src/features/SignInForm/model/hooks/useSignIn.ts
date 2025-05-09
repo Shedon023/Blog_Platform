@@ -5,18 +5,13 @@ import { UseFormSetError } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "@/shared/config/env";
 
-export const useSignIn = (
-  setError: UseFormSetError<{
-    emailAdress: string;
-    password: string;
-  }>
-) => {
+export const useSignIn = (setError: UseFormSetError<SignInData>) => {
   const navigate = useNavigate();
   const mutation = useMutation({
     mutationFn: (userData: SignInData) =>
       axios.post(`${API_URL}/users/login`, {
         user: {
-          email: userData.emailAdress,
+          email: userData.email,
           password: userData.password,
         },
       }),

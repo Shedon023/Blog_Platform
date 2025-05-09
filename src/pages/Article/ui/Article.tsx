@@ -12,15 +12,15 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import { useArticle } from "../model/hooks/useArticle"; //
+import { useArticle } from "../model/hooks/useArticle";
 import { useDeleteArticle } from "@/features/DeleteArticle/model/hooks";
 import { useState } from "react";
 import Markdown from "markdown-to-jsx";
 import { useGetUser } from "../model/hooks/useGetUser";
 import { Loader } from "@/shared/ui/Loader";
-import { ArticleProps } from "../model/types";
+import FavoriteButton from "@/features/Toggle-favorite/ui/FavoriteButton";
 
-const Article = ({ actionSlot }: ArticleProps) => {
+const Article = () => {
   const { slug } = useParams<{ slug: string }>();
   const { data: article, isLoading, isError, error } = useArticle(slug!);
   const { data: user } = useGetUser();
@@ -53,13 +53,11 @@ const Article = ({ actionSlot }: ArticleProps) => {
                 <Typography variant="h5" className={styles.articleTitle}>
                   {article.title}
                 </Typography>
-                {actionSlot &&
-                  actionSlot({
-                    slug: article.slug,
-                    favorited: article.favorited,
-                    favoritesCount: article.favoritesCount,
-                    onToggleFavorite: () => {},
-                  })}
+                <FavoriteButton
+                  initialCount={article.favoritesCount}
+                  slug={article.slug}
+                  initialFavorited={article.favorited}
+                />
               </Box>
 
               <Box className={styles.tagWrapper}>

@@ -3,20 +3,24 @@ import { useForm, FormProvider } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@mui/material";
-import { signInSchema } from "../model/schema";
 import { SignInData } from "../model/types";
 import { useSignIn } from "../model/hooks/useSignIn";
 import { useUserStore } from "@/entities/user/model/store";
 import { User } from "@/entities/user/model/types";
 import { TextInput } from "@/shared/ui/TextInput";
 import { Loader } from "@/shared/ui/Loader";
+import { signInSchema } from "../model";
+
+const defaultValues = signInSchema.parse({
+  email: "",
+  password: "",
+});
 
 const SignInForm = () => {
-  const defaultValues = signInSchema.parse({});
   const methods = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
     mode: "onBlur",
-    defaultValues: defaultValues,
+    defaultValues,
   });
 
   const {
@@ -32,11 +36,11 @@ const SignInForm = () => {
     try {
       const response = await loginMutation(data);
       const user: User = {
-        username: response.data.user.username,
-        email: response.data.user.email,
-        bio: response.data.user.bio,
-        image: response.data.user.image,
-        token: response.data.user.token,
+        username: response.data.user.username ?? "",
+        email: response.data.user.email ?? "",
+        bio: response.data.user.bio ?? "",
+        image: response.data.user.image ?? "",
+        token: response.data.user.token ?? "",
       };
       setUser(user);
       window.location.href = "/";
@@ -49,15 +53,9 @@ const SignInForm = () => {
     <div className={styles.signInContainer}>
       <span className={styles.formName}>Sign In</span>
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(() => onSubmit)}>
           <div className={styles.forms}>
-            <TextInput
-              className={styles.input}
-              name="emailAdress"
-              label="Email"
-              placeholder="Email"
-              autoComplete="email"
-            />
+            <TextInput className={styles.input} name="email" label="Email" placeholder="Email" autoComplete="email" />
 
             <TextInput
               className={styles.input}
