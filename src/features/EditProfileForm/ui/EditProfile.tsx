@@ -8,17 +8,18 @@ import { useUserStore } from "../../../entities/user/model/store";
 import { useEditProfile } from "../model/hooks/useEditProfile";
 import { useEffect } from "react";
 import { TextInput } from "@/shared/ui/TextInput";
+import { getDefaults } from "@/shared/utils/getDefaults";
 
 const EditProfileForm = () => {
   const user = useUserStore((state) => state.user);
   const { mutateAsync } = useEditProfile();
 
-  const defaultValues = editProfileSchema.parse({});
+  const defaultValues = getDefaults(editProfileSchema);
 
   const methods = useForm<EditProfileData>({
     resolver: zodResolver(editProfileSchema),
     mode: "onBlur",
-    defaultValues: defaultValues,
+    defaultValues,
   });
 
   const { handleSubmit, reset } = methods;

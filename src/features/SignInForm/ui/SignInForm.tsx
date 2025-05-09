@@ -10,11 +10,9 @@ import { User } from "@/entities/user/model/types";
 import { TextInput } from "@/shared/ui/TextInput";
 import { Loader } from "@/shared/ui/Loader";
 import { signInSchema } from "../model";
+import { getDefaults } from "@/shared/utils/getDefaults";
 
-const defaultValues = signInSchema.parse({
-  email: "",
-  password: "",
-});
+const defaultValues = getDefaults(signInSchema);
 
 const SignInForm = () => {
   const methods = useForm<SignInData>({

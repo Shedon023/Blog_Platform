@@ -14,15 +14,16 @@ import { useEditArticle } from "../model";
 import { ArticleFormProps } from "../model/types";
 import { useArticleBySlug } from "../model/hooks/useArticleBySlug";
 import { Loader } from "@/shared/ui/Loader";
+import { getDefaults } from "@/shared/utils/getDefaults";
 
 const CreateOrEditArticleForm = ({ mode, slug }: ArticleFormProps) => {
   // const isMounted = useIsMounted();
 
-  const defaultValues = editArticleSchema.parse({});
+  const defaultValues = getDefaults(editArticleSchema);
   const methods = useForm<EditArticleData | NewArticleData>({
     resolver: zodResolver(mode === "edit" ? editArticleSchema : newArticleSchema),
     mode: "onBlur",
-    defaultValues: defaultValues,
+    defaultValues,
   });
 
   const { control, handleSubmit, reset, setError } = methods;
